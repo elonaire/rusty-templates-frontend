@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes wave {
+    0% { color: #FFD700; }
+    16% { color: #FFA500; }
+    32% { color: #5D9CEC; }
+    48% { color: #00BFFF; }
+    64% { color: #7B68EE; }
+    80% { color: #FF69B4; }
+    100% { color: #FFD700; }
+}
+
+.wave-text {
+    animation: wave 3s infinite alternate;
+}
