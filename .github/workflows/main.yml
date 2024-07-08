@@ -37,7 +37,10 @@ jobs:
       #   echo "MAIN_USER_ID=${{ vars.MAIN_USER_ID }}" >> .env
       #   cat .env
       #   export $(cat .env | xargs) && trunk build --release
-      run: trunk build --release
+      run: |
+        cargo install tailwind-yew
+        ./tailwindcss -i styles/input.css -o styles/output.css --minify
+        trunk build --release
     - name: 'Tar files'
       run: tar -cvf dist.tar dist/
     - name: Archive production artifacts
