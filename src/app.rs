@@ -5,7 +5,7 @@ use gloo::timers::callback::Interval;
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let target_date = Utc.with_ymd_and_hms(2024, 7, 10, 0, 0, 0).unwrap();
+    let target_date = Utc.with_ymd_and_hms(2024, 7, 11, 0, 0, 0).unwrap();
     let now = Utc::now();
 
     let remaining_duration = if target_date > now {
