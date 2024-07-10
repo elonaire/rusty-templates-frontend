@@ -5,7 +5,7 @@ use gloo::timers::callback::Interval;
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let target_date = Utc.with_ymd_and_hms(2024, 7, 11, 0, 0, 0).unwrap();
+    let target_date = Utc.with_ymd_and_hms(2024, 7, 11, 17, 0, 0).unwrap();
     let now = Utc::now();
 
     let remaining_duration = if target_date > now {
@@ -47,7 +47,7 @@ pub fn app() -> Html {
             </div>
             <h2 class="text-3xl text-center max-w-lg text-gray-100 mt-2">{ "Your one-stop shop for easy-to-customize, intuitive and responsive web templates written in Rust!" }</h2>
             <h3 class="wave-text text-2xl text-center max-w-lg text-gray-150 mt-2">{ "There's no need to reinvent. Compile to Web Assembly and deploy!" }</h3>
-            <p class="mt-4">{"If you are an interested creator, kindly reach out us via info@rustytemplates.com."}</p>
+            <p class="mt-4">{"If you are an interested creator, kindly reach out to us via info@rustytemplates.com."}</p>
         </main>
     }
 }
