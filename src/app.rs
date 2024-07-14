@@ -44,7 +44,7 @@ pub fn app() -> Html {
     html! {
         <main class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <img class="w-48 mb-8 animate-pulse text-gray-100" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/de1ec98f-ab67-41b2-75af-7b9cc7d35200/public" alt="RT logo" />
-            <h1 class="text-5xl text-center font-bold mb-4">{ "Almost there! It will be worth the wait!" }</h1>
+            <h1 class="text-5xl text-center font-bold mb-4">{ "Almost there! It will be worth the wait! (Licensing)" }</h1>
             <div class="text-3xl font-medium mb-8 w-64 text-gray-100">
                 { format!("{:02}d {:02}h {:02}m {:02}s", days, hours, minutes, seconds) }
             </div>
