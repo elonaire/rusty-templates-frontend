@@ -5,7 +5,7 @@ use yew::prelude::*;
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let target_date = Utc.with_ymd_and_hms(2024, 7, 14, 17, 0, 0).unwrap();
+    let target_date = Utc.with_ymd_and_hms(2024, 7, 15, 17, 0, 0).unwrap();
     let now = Utc::now();
 
     let remaining_duration = if target_date > now {
@@ -44,13 +44,13 @@ pub fn app() -> Html {
     html! {
         <main class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <img class="w-48 mb-8 animate-pulse text-gray-100" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/de1ec98f-ab67-41b2-75af-7b9cc7d35200/public" alt="RT logo" />
-            <h1 class="text-5xl font-bold mb-4">{ "Almost there! It will be worth the wait!" }</h1>
+            <h1 class="text-5xl text-center font-bold mb-4">{ "Almost there! It will be worth the wait!" }</h1>
             <div class="text-3xl font-medium mb-8 w-64 text-gray-100">
                 { format!("{:02}d {:02}h {:02}m {:02}s", days, hours, minutes, seconds) }
             </div>
             <h2 class="text-3xl text-center max-w-lg text-gray-100 mt-2">{ "Your one-stop shop for easy-to-customize, intuitive and responsive web templates written in Rust!" }</h2>
             <h3 class="wave-text text-2xl text-center max-w-lg text-gray-150 mt-2">{ "There's no need to reinvent. Compile to Web Assembly and deploy!" }</h3>
-            <p class="mt-4">{"If you are an interested creator, kindly reach out to us via info@rustytemplates.com."}</p>
+            <p class="mt-4 text-center">{"If you are an interested creator, kindly reach out to us via info@rustytemplates.com."}</p>
         </main>
     }
 }
