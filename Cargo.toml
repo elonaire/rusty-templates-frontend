@@ -11,5 +11,10 @@ categories = ["gui", "wasm", "web-programming"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
+chrono = "0.4.38"
+serde = "1.0.204"
 tailwind-yew = "0.1.5"
+web-sys = "0.3.69"
 yew = { version="0.20", features=["csr"] }
+yew-router = "0.17"
+yew_icons = { version = "0.7.3", features = ["BootstrapCart3"] }
