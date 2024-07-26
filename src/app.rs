@@ -1,10 +1,10 @@
 use std::rc::Rc;
 
 use yew::prelude::*;
-use crate::{views::{landing::Landing, store::StorePage}, data::models::user::User};
+use crate::{data::models::{template::Product, user::{AuthDetails, User}}, views::{landing::Landing, store::StorePage}};
 use yew_router::prelude::*;
 
-#[derive(Clone, Routable, PartialEq)]
+#[derive(Clone, Routable, PartialEq, Debug)]
 pub enum Route {
     #[at("/")]
     Landing,
@@ -23,13 +23,20 @@ pub enum Route {
     NotFound,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum AppRoute {
+    Route(Route),
+}
+
 pub enum StateAction {
-    UpdateUserInfo(User),
+    UpdateUserAuthInfo(AuthDetails),
+    UpdateProducts(Vec<Product>),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct AppState {
-    pub user_details: User,
+    pub auth_details: AuthDetails,
+    pub products: Vec<Product>,
 }
 
 impl Reducible for AppState {
@@ -37,9 +44,15 @@ impl Reducible for AppState {
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         let updated_state = match action {
-            StateAction::UpdateUserInfo(user) => {
+            StateAction::UpdateUserAuthInfo(user) => {
                 AppState {
-                    user_details: user,
+                    auth_details: user,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateProducts(products) => {
+                AppState {
+                    products,
                     ..self.as_ref().clone()
                 }
             }
