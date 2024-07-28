@@ -7,7 +7,14 @@ pub struct StepperProps {
     pub children: ChildrenWithProps<Step>,
     pub steps_titles: Vec<String>,
     pub final_button_text: String,
-    pub on_click_final_button: Option<Callback<MouseEvent>>,
+    #[prop_or(Callback::noop())]
+    pub on_click_final_button: Callback<MouseEvent>,
+    #[prop_or("".to_string())]
+    pub button_theme_ext: String,
+    #[prop_or("".to_string())]
+    pub indicator_no_theme_ext: String,
+    #[prop_or("".to_string())]
+    pub indicator_text_theme_ext: String
 }
 
 // Stepper Component
@@ -15,6 +22,21 @@ pub struct StepperProps {
 pub fn Stepper(props: &StepperProps) -> Html {
     let current_step = use_state(|| 0);
     let step_count = props.children.len();
+
+    let indicator_class = |is_current| {
+            if is_current {
+                format!("bg-blue-500 text-white {}", props.indicator_no_theme_ext.clone())
+            } else {
+                "bg-gray-200 text-gray-800".to_string()
+            }
+    };
+    let text_class = |is_current| {
+        if is_current {
+            format!("font-bold text-blue-500 {}", props.indicator_text_theme_ext.clone())
+        } else {
+            "text-gray-800".to_string()
+        }
+    };
 
     let onclick_next = {
         let current_step = current_step.clone();
@@ -45,25 +67,17 @@ pub fn Stepper(props: &StepperProps) -> Html {
                     {
                         for props.steps_titles.iter().enumerate().map(|(index, title)| {
                             let is_current = index == *current_step;
+                            let ind_class = indicator_class(is_current);
+                            let txt_class = text_class(is_current);
                             html! {
                                 <div class={format!("relative flex items-center bg-slate-50 space-x-2 mb-2 z-10 {}", if !is_current { "hidden md:flex" } else { "" })}>
                                     <div class={format!(
-                                        "w-8 h-8 flex items-center justify-center rounded-full text-sm {}",
-                                        if is_current {
-                                            "bg-blue-500 text-white"
-                                        } else {
-                                            "bg-gray-200 text-gray-800"
-                                        }
+                                        "w-8 h-8 flex items-center justify-center rounded-full text-sm {}", ind_class
                                     )}>
                                         { index + 1 }
                                     </div>
                                     <div class={format!(
-                                        "text-sm {}",
-                                        if is_current {
-                                            "font-bold text-blue-500"
-                                        } else {
-                                            "text-gray-800"
-                                        }
+                                        "text-sm {}", txt_class
                                     )}>
                                         { title }
                                     </div>
@@ -92,11 +106,11 @@ pub fn Stepper(props: &StepperProps) -> Html {
                 {
                     if *current_step == step_count - 1 {
                         html! {
-                            <BasicButton onclick={props.on_click_final_button.clone().unwrap_or(Callback::noop())} button_text={props.final_button_text.clone()} style_ext={"px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"} />
+                            <BasicButton onclick={props.on_click_final_button.clone()} button_text={props.final_button_text.clone()} style_ext={format!("px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 {}", &props.button_theme_ext)} />
                         }
                     } else {
                         html! {
-                            <BasicButton onclick={onclick_next} button_text={"Next"} style_ext={"px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"} />
+                            <BasicButton onclick={onclick_next} button_text={"Next"} style_ext={format!("px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 {}", &props.button_theme_ext)} />
                         }
                     }
                 }

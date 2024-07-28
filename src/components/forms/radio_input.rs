@@ -2,14 +2,19 @@ use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct RadioInputFieldProps {
-    pub initial_value: Option<String>,
+    #[prop_or("".to_string())]
+    pub initial_value: String,
     pub label: String,
     pub name: String,
     pub input_node_ref: Option<NodeRef>,
-    pub readonly: Option<bool>,
-    pub required: Option<bool>,
-    pub placeholder: Option<String>,
-    pub oninput: Option<Callback<InputEvent>>,
+    #[prop_or(false)]
+    pub readonly: bool,
+    #[prop_or(false)]
+    pub required: bool,
+    #[prop_or("".to_string())]
+    pub placeholder: String,
+    #[prop_or(Callback::noop())]
+    pub oninput: Callback<InputEvent>,
     pub id_attr: String,
 }
 
@@ -27,7 +32,6 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
         id_attr
     } = props;
 
-    let field_required = required.unwrap_or(false);
     let display_error = use_state(|| false);
 
     html! {
@@ -36,19 +40,19 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
                 <input
                     class="leading-tight rounded-full border-gray-300 text-blue-950 shadow-sm focus:border-blue-950 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
                     type="radio"
-                    value={initial_value.clone().unwrap_or("".to_string())}
+                    value={initial_value.clone()}
                     name={name.clone()}
                     ref={input_node_ref.clone().unwrap_or(NodeRef::default())}
-                    readonly={readonly.unwrap_or(false)}
-                    oninput={oninput.clone().unwrap_or(Callback::noop())}
-                    placeholder={placeholder.clone().unwrap_or("".to_string())}
+                    readonly={*readonly}
+                    oninput={oninput.clone()}
+                    placeholder={placeholder.clone()}
                     autocomplete="on"
                     id={id_attr.clone()}
                 />
                 <span>
                     { label }
                 {
-                    if field_required {
+                    if *required {
                         html!{ <span class="text-red-500">{ "*" }</span> }
                     } else {
                         html!{}
@@ -56,7 +60,7 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
                 }
                 </span>
             </label>
-            
+
             <p class="text-red-500 text-xs italic">{
                 if *display_error {
                     "This field is required"

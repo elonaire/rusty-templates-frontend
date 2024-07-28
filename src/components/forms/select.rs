@@ -8,14 +8,20 @@ pub struct SelectOption {
 
 #[derive(Clone, PartialEq, Properties, Debug)]
 pub struct SelectInputProps {
-    pub initial_value: Option<String>,
+    #[prop_or("".to_string())]
+    pub initial_value: String,
     pub label: String,
     pub name: String,
     pub input_node_ref: Option<NodeRef>,
-    pub readonly: Option<bool>,
+    #[prop_or(false)]
+    pub readonly: bool,
     pub options: Vec<SelectOption>,
-    pub required: Option<bool>,
-    pub onchange: Option<Callback<Event>>,
+    #[prop_or(false)]
+    pub required: bool,
+    #[prop_or(Callback::noop())]
+    pub onchange: Callback<Event>,
+    #[prop_or("".to_string())]
+    pub ext_input_styles: String,
 }
 
 #[function_component]
@@ -29,25 +35,25 @@ pub fn SelectInput(props: &SelectInputProps) -> Html {
         readonly,
         required,
         onchange,
-        options
+        options,
+        ext_input_styles
     } = props;
 
-    let field_required = props.required.unwrap_or(false);
     let display_error = use_state(|| false);
 
     html! {
         <div class="mb-4">
             <label for={props.name.clone()} class="block text-gray-700 text-sm font-bold mb-2">
                 {props.label.clone()}
-                { if field_required { html!{ <span class="text-red-500">{ "*" }</span> }  } else { html!{} } }
+                { if *required { html!{ <span class="text-red-500">{ "*" }</span> }  } else { html!{} } }
             </label>
             <select
                 ref={input_node_ref.clone().unwrap_or(NodeRef::default())}
                 name={name.clone()}
-                class="form-input focus:ring-0 shadow border-2 border-slate-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-                value={initial_value.clone().unwrap_or("".to_string())}
-                readonly={readonly.unwrap_or(false)}
-                onchange={onchange.clone().unwrap_or(Callback::noop())}
+                class={format!("form-input ring-0 shadow appearance-none border border-slate-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow {}", ext_input_styles)}
+                value={initial_value.clone()}
+                readonly={*readonly}
+                onchange={onchange.clone()}
                 id={name.clone()}
             >
                 { for options.iter().map(|option| {

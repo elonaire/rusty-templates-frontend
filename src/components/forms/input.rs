@@ -101,7 +101,7 @@ pub fn InputField(props: &InputFieldProps) -> Html {
                 }
             </label>
             <input
-                class={format!("form-input focus:ring-0 shadow appearance-none border-2 border-slate-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500 flex-grow {}", ext_input_styles)}
+                class={format!("form-input ring-0 shadow appearance-none border border-slate-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow {}", ext_input_styles)}
                 type={input_field_type_str.to_string()}
                 value={initial_value.clone().unwrap_or("".to_string())}
                 name={name.clone()}

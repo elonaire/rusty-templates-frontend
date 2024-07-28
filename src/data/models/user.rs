@@ -49,3 +49,39 @@ pub enum AccountStatus {
     Suspended,
     Deleted,
 }
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct LoginForm {
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Logins {
+    #[serde(skip_serializing_if = "Option::is_none", rename = "userName")]
+    pub user_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "oauthClient")]
+    pub oauth_client: Option<OAuthClientName>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct LoginPayload {
+    #[serde(rename = "rawUserDetails")]
+    pub raw_user_details: Logins,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct LoginResponse {
+    #[serde(rename = "signIn")]
+    pub sign_in: LoginTokens,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct LoginTokens {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}

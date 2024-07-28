@@ -1,5 +1,5 @@
 use crate::components::forms::input::{InputField, InputFieldType};
-use chrono::{Datelike, NaiveDate, Weekday};
+use chrono::{Datelike, Local, NaiveDate, Weekday};
 use yew::{prelude::*, virtual_dom::VNode};
 use yew_icons::{Icon, IconId};
 
@@ -7,9 +7,12 @@ use yew_icons::{Icon, IconId};
 pub struct DatePickerProps {
     pub label: String,
     pub name: String,
-    pub required: Option<bool>,
-    pub initial_value: Option<NaiveDate>,
-    pub onchange: Option<Callback<NaiveDate>>,
+    #[prop_or(false)]
+    pub required: bool,
+    #[prop_or(Local::now().date_naive())]
+    pub initial_value: NaiveDate,
+    #[prop_or(Callback::noop())]
+    pub onchange: Callback<NaiveDate>,
 }
 
 #[function_component]
@@ -20,11 +23,11 @@ pub fn DatePicker(props: &DatePickerProps) -> Html {
         required,
         initial_value,
         onchange,
-    } = props.clone();
+    } = props;
 
     let show_calendar = use_state_eq(|| false);
     let selected_date =
-        use_state_eq(|| initial_value.unwrap_or_else(|| chrono::Local::now().date_naive()));
+        use_state_eq(|| initial_value.clone());
 
     // Toggle calendar visibility
     let toggle_calendar = {
@@ -40,10 +43,8 @@ pub fn DatePicker(props: &DatePickerProps) -> Html {
         let show_calendar = show_calendar.clone();
         let selected_date = selected_date.clone();
         Callback::from(move |date: NaiveDate| {
-            selected_date.set(date);
-            if let Some(onchange) = &onchange {
-                onchange.emit(date);
-            }
+            selected_date.set(date.clone());
+            onchange.emit(date.clone());
             show_calendar.set(false);
         })
     };
@@ -52,7 +53,7 @@ pub fn DatePicker(props: &DatePickerProps) -> Html {
         <div class="mb-2">
             <label for={name.clone()} class="block text-gray-700 text-sm font-bold mb-2">
                 {label}
-                { if required.unwrap_or(false) { html!{ <span class="text-red-500">{ "*" }</span> } } else { html!{} } }
+                { if *required { html!{ <span class="text-red-500">{ "*" }</span> } } else { html!{} } }
             </label>
             <div class="relative">
                 <InputField readonly=true onclick={toggle_calendar.clone()} initial_value={selected_date.format("%b %0e %Y").to_string()} name={name.clone()} field_type={InputFieldType::Text} />

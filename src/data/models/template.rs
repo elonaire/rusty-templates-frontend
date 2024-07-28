@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use yew::Properties;
 
-#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, Properties)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, Properties, Default)]
 pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -10,7 +10,7 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<i64>,
+    pub price: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "previewLink")]
     pub preview_link: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -2,12 +2,15 @@ use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
-use crate::app::Route;
+use crate::{app::{Route, AppStateContext}, components::badge::Badge};
 
 #[function_component]
 pub fn TopNav() -> Html {
+    let current_state = use_context::<AppStateContext>().unwrap();
     // Create state to manage the visibility of the sidemenu
     let is_menu_open = use_state(|| false);
+    let location = use_location().expect("No location available");
+    println!("location: {:?}", location);
 
     // Function to toggle the visibility of the menu
     let toggle_menu = {
@@ -17,19 +20,27 @@ pub fn TopNav() -> Html {
         })
     };
 
+    use_effect_with_deps(move |_| {
+
+    }, current_state.clone());
+
 
     html! {
         <>
             <header class="bg-white shadow">
                 <nav class="container mx-auto p-4 flex justify-between items-center">
                     // <h1 class="text-2xl font-bold">{"Rusty Templates"}</h1>
-                    <img class="w-24" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
-            <div class="hidden md:flex items-center">
+                    <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Landing}>
+                        <img class="w-24" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
+                    </Link<Route>>
+                    <div class="hidden md:flex items-center">
                         <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Landing}>{"Home"}</Link<Route>>
-                        <a href="#templates" class="text-gray-700 px-4">{"Templates"}</a>
-                        <a href="#contact" class="text-gray-700 px-4">{"Contact"}</a>
-                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Landing}>
-                            <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
+                        // <a href="#templates" class="text-gray-700 px-4">{"Templates"}</a>
+                        // <a href="#contact" class="text-gray-700 px-4">{"Contact"}</a>
+                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Cart}>
+                            <Badge color={"bg-secondary"} text={current_state.cart_products.len().clone().to_string()}>
+                                <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
+                            </Badge>
                         </Link<Route>>
                     </div>
                     <button class="block md:hidden" onclick={toggle_menu.clone()}>
@@ -47,11 +58,13 @@ pub fn TopNav() -> Html {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
-                <Link<Route> classes={classes!("text-white", "text-center", "text-xl")} to={Route::Landing}>{"Home"}</Link<Route>>
-                <a href="#templates" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Templates"}</a>
-                <a href="#contact" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Contact"}</a>
-                <Link<Route> classes={classes!("text-white", "text-center", "text-xl")} to={Route::Landing}>
-                    <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
+                <Link<Route> classes={"text-white text-center text-xl"} to={Route::Landing}>{"Home"}</Link<Route>>
+                // <a href="#templates" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Templates"}</a>
+                // <a href="#contact" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Contact"}</a>
+                <Link<Route> classes={"text-white flex items-center justify-center text-xl"} to={Route::Cart}>
+                    <Badge color={"bg-secondary"} text={current_state.cart_products.len().clone().to_string()}>
+                        <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
+                    </Badge>
                 </Link<Route>>
             </div>
         </>

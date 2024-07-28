@@ -5,11 +5,13 @@ use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
 use crate::data::context::products::get_products;
 use crate::data::models::template::Product;
-use crate::{app::{Route, AppStateContext}, components::nav::top_nav::TopNav};
+use crate::{app::{Route, AppStateContext}, components::{nav::top_nav::TopNav, button::BasicButton}};
 
 #[derive(Debug, Properties, Clone, PartialEq)]
 pub struct TemplateCardProps {
-   pub product: Product
+   pub product: Product,
+   // #[prop_or(Callback::noop())]
+   // pub onclick_buy: Callback<MouseEvent>,
 }
 
 #[function_component]
@@ -98,11 +100,14 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
     html! {
         <div class="rounded">
             <div onmouseover={on_mouse_over} onmouseout={on_mouse_out} class="relative cursor-pointer">
-                <img src={props.product.screenshot.clone().unwrap()} alt={props.product.name.clone().unwrap()} class="w-full h-56 object-cover mb-2 rounded" />
+                <img src={props.product.screenshot.clone().unwrap()} alt={props.product.name.clone().unwrap()} class="w-full h-72 object-cover mb-2 rounded" />
                 <button class={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)}>{"Live Preview"}</button>
             </div>
             <div class="p-2">
-                <h3 class="text-lg font-semibold mb-2">{&props.product.name.clone().unwrap()}</h3>
+                <div class="flex flex-row items-center justify-between mb-2">
+                    <h3 class="text-lg font-semibold">{&props.product.name.clone().unwrap()}</h3>
+                    <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
+                </div>
                 // <p class="text-gray-700 mb-4 text-sm">{&props.use_case.clone().unwrap()}</p>
             </div>
         </div>
@@ -120,7 +125,7 @@ pub fn TemplatesList(TemplatesListProps { templates }: &TemplatesListProps) -> H
     html! {
         <section id="templates" class="py-10">
             <h2 class="text-3xl font-bold text-center mb-6">{"Featured Templates"}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {for templates.into_iter().map(|template| html! {
                     <PopularTemplateCard product={template.clone()} />
                 })}
@@ -147,7 +152,8 @@ pub fn ContactSection() -> Html {
                     <label for="message" class="block text-gray-700">{"Message"}</label>
                     <textarea id="message" class="mt-1 p-2 block w-full border border-gray-300 rounded"></textarea>
                 </div>
-                <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition">{"Send"}</button>
+                // <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition">{"Send"}</button>
+                <BasicButton button_text={"Send"} style_ext={"bg-primary text-white px-4 py-2 text-sm hover:bg-secondary transition"} />
             </form>
         </section>
     }

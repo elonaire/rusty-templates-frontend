@@ -3,6 +3,7 @@ use yew::prelude::*;
 #[derive(Clone, Properties, PartialEq)]
 pub struct ToggleSwitchProps {
     pub active: bool,
+    #[prop_or(Callback::noop())]
     pub on_toggle: Callback<bool>,
     #[prop_or("On".to_string())]
     pub label_active: String,

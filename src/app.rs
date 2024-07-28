@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use yew::prelude::*;
-use crate::{data::models::{template::Product, user::{AuthDetails, User}}, views::{landing::Landing, store::StorePage}};
+use crate::{data::models::{order::Cart, template::Product, user::AuthDetails}, views::{cart::CartPage, landing::Landing, sign_in::SignInPage, sign_up::SignUpPage, store::StorePage, thankyou::ThankYouPage}};
 use yew_router::prelude::*;
 
 #[derive(Clone, Routable, PartialEq, Debug)]
@@ -18,6 +18,8 @@ pub enum Route {
     SignUp,
     #[at("/account")]
     Account,
+    #[at("/thankyou")]
+    ThankYou,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -31,12 +33,18 @@ pub enum AppRoute {
 pub enum StateAction {
     UpdateUserAuthInfo(AuthDetails),
     UpdateProducts(Vec<Product>),
+    UpdateCart(Cart),
+    UpdateCartProducts(Vec<Product>),
+    UpdateCheckoutUrl(String),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct AppState {
     pub auth_details: AuthDetails,
     pub products: Vec<Product>,
+    pub cart_products: Vec<Product>,
+    pub cart: Cart,
+    pub checkout_url: String,
 }
 
 impl Reducible for AppState {
@@ -55,6 +63,24 @@ impl Reducible for AppState {
                     products,
                     ..self.as_ref().clone()
                 }
+            },
+            StateAction::UpdateCart(cart) => {
+                AppState {
+                    cart,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateCartProducts(products) => {
+                AppState {
+                    cart_products: products,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateCheckoutUrl(checkout_url) => {
+                AppState {
+                    checkout_url,
+                    ..self.as_ref().clone()
+                }
             }
         };
 
@@ -68,10 +94,11 @@ pub fn switch(routes: Route) -> Html {
     match routes {
         Route::Landing => html! { <Landing /> },
         Route::Store => html! { <StorePage /> },
-        Route::Cart => html! { <h1>{ "Cart" }</h1> },
-        Route::SignIn => html! { <h1>{ "Sign In" }</h1> },
-        Route::SignUp => html! { <h1>{ "Sign Up" }</h1> },
+        Route::Cart => html! { <CartPage /> },
+        Route::SignIn => html! { <SignInPage /> },
+        Route::SignUp => html! { <SignUpPage /> },
         Route::Account => html! { <h1>{ "Account" }</h1> },
+        Route::ThankYou => html! { <ThankYouPage /> },
         Route::NotFound => html! { <h1>{ "404" }</h1> },
     }
 }

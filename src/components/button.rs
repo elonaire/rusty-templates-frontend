@@ -7,7 +7,8 @@ pub struct BasicButtonProps {
     pub button_text: String,
     #[prop_or_default]
     pub style_ext: String,
-    pub onclick: Option<Callback<MouseEvent>>,
+    #[prop_or(Callback::noop())]
+    pub onclick: Callback<MouseEvent>,
     pub icon: Option<IconId>,
     #[prop_or(false)]
     pub disabled: bool,
@@ -39,7 +40,7 @@ pub fn BasicButton(props: &BasicButtonProps) -> Html {
         }
     };
     html! {
-        <button type={button_type.clone()} class={format!("font-bold py-2 px-4 rounded {}", style_ext)} onclick={onclick.clone().unwrap_or(Callback::noop())} disabled={disabled.clone()}>
+        <button type={button_type.clone()} class={format!("font-bold py-2 px-4 rounded {}", style_ext)} onclick={onclick.clone()} disabled={disabled.clone()}>
             <span class={format!("flex flex-row items-center justify-center {}", button_content_styles)}>
                 {
                     match icon {
