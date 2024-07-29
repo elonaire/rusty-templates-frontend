@@ -6,8 +6,8 @@ use crate::{
     app::{AppState, StateAction},
     data::{
         graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::user::{AuthDetails, LoginPayload, LoginResponse},
-    },
+        models::user::{AuthDetails, CheckAuthResponse, LoginPayload, LoginResponse},
+    }, utils::auth_interceptor::retrieve_new_token,
 };
 
 pub async fn sign_in(
@@ -31,8 +31,6 @@ pub async fn sign_in(
     >(None, endpoint, query, payload)
     .await;
 
-    log::info!("Enters here: {:?}", sign_in_res);
-
     state_clone.dispatch(StateAction::UpdateUserAuthInfo(
         match sign_in_res.get_data() {
             Some(data) => AuthDetails {
@@ -42,6 +40,25 @@ pub async fn sign_in(
             None => Default::default(),
         },
     ));
+
+    Ok(())
+}
+
+pub async fn get_new_token(
+    state_clone: &UseReducerHandle<AppState>,
+) -> Result<(), Error> {
+
+    match retrieve_new_token(&state_clone.auth_details.token).await {
+        Ok(new_token) => {
+            let details = AuthDetails {
+                token: new_token.strip_prefix("Bearer ").unwrap().to_string(),
+                ..state_clone.auth_details.clone()
+            };
+            log::info!("{:?}", details);
+            state_clone.dispatch(StateAction::UpdateUserAuthInfo(details));
+        },
+        Err(_e) => {}
+    };
 
     Ok(())
 }

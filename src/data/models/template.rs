@@ -69,3 +69,15 @@ pub struct GetProductsResponse {
     #[serde(rename = "getProducts")]
     pub get_products: Vec<Product>,
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GetProductsByIdsResponse {
+    #[serde(rename = "getProductsByIds")]
+    pub get_products_by_ids: Vec<Product>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GetProductsByIdsVar {
+    #[serde(rename = "productIds")]
+    pub product_ids: Vec<String>
+}

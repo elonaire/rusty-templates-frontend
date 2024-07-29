@@ -50,8 +50,6 @@ pub fn Breadcrumbs() -> Html {
             );
 
             breadcrumbs_clone.set(new_crumbs);
-
-            log::info!("cumulative_path: {:?}", breadcrumbs_clone);
         },
         location_clone,
     );
@@ -59,9 +57,9 @@ pub fn Breadcrumbs() -> Html {
     html! {
         <nav class="p-3 rounded">
             <ul class="flex items-center space-x-2">
-                { 
+                {
                     breadcrumbs.iter().enumerate().map(|(i, item)| {
-                        html!{ 
+                        html!{
                             <li class="flex flex-row gap-2 items-center">
                                 {
                                     match item.link.clone() {
@@ -85,7 +83,7 @@ pub fn Breadcrumbs() -> Html {
                                             }
                                     }
                                 }
-                            
+
                             if i < breadcrumbs.len() - 1 { <span class="text-xs mx-2"><Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapChevronRight}/></span> } else {}
                         </li>
                     }

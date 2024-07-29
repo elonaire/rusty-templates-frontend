@@ -8,25 +8,45 @@ pub struct AuthDetails {
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default, Eq)]
 pub struct User {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub middle_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub full_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<Gender>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<AccountStatus>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub oauth_client: Option<OAuthClientName>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub profile_picture: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub website: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
 }
 
@@ -84,4 +104,17 @@ pub struct LoginTokens {
     pub token: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct AuthStatus {
+    #[serde(rename = "isAuth")]
+    pub is_auth: bool,
+    pub sub: String,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct CheckAuthResponse {
+    #[serde(rename = "checkAuth")]
+    pub check_auth: AuthStatus,
 }

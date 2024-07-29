@@ -55,3 +55,27 @@ pub struct CheckoutResponse {
     #[serde(rename = "createOrder")]
     pub create_order: String
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetProductsIdsResponse {
+    #[serde(rename = "getProductExternalIds")]
+    pub get_product_external_ids: Vec<String>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetProductsIdsVar {
+    #[serde(rename = "cartId")]
+    pub cart_id: String
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetCartVar {
+    #[serde(rename = "cartId")]
+    pub cart_id: String
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetCartResponse {
+    #[serde(rename = "getCart")]
+    pub get_cart: Cart
+}

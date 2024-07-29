@@ -36,6 +36,7 @@ pub enum StateAction {
     UpdateCart(Cart),
     UpdateCartProducts(Vec<Product>),
     UpdateCheckoutUrl(String),
+    UpdateCartProductsIds(Vec<String>),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
@@ -45,6 +46,7 @@ pub struct AppState {
     pub cart_products: Vec<Product>,
     pub cart: Cart,
     pub checkout_url: String,
+    pub cart_products_ids: Vec<String>
 }
 
 impl Reducible for AppState {
@@ -53,12 +55,14 @@ impl Reducible for AppState {
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         let updated_state = match action {
             StateAction::UpdateUserAuthInfo(user) => {
+                log::info!("track here user: {:?}", user);
                 AppState {
                     auth_details: user,
                     ..self.as_ref().clone()
                 }
             },
             StateAction::UpdateProducts(products) => {
+                log::info!("track here products: {:?}", products);
                 AppState {
                     products,
                     ..self.as_ref().clone()
@@ -79,6 +83,12 @@ impl Reducible for AppState {
             StateAction::UpdateCheckoutUrl(checkout_url) => {
                 AppState {
                     checkout_url,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateCartProductsIds(cart_products_ids) => {
+                AppState {
+                    cart_products_ids,
                     ..self.as_ref().clone()
                 }
             }

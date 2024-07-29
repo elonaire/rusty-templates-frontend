@@ -109,7 +109,6 @@ impl Column {
     }
 
     pub fn toggle_sort_icon(&mut self) {
-        log::info!("{:?}", self.sort_order);
         self.sort_icon = match self.sort_order {
             SortOrder::Default => IconId::BootstrapFilter,
             SortOrder::Ascending => IconId::BootstrapSortUp,

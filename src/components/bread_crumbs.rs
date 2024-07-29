@@ -51,8 +51,6 @@ pub fn Breadcrumbs() -> Html {
             );
 
             breadcrumbs_clone.set(new_crumbs);
-
-            log::info!("cumulative_path: {:?}", breadcrumbs_clone);
         },
         location_clone,
     );

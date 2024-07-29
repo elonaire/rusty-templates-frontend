@@ -42,7 +42,6 @@ pub fn Landing() -> Html {
     // let products_state_clone = products.clone();
     let current_state_clone_update = current_state.clone();
     use_effect_with_deps(move |_| {
-        log::info!("{:?}", current_state_clone_update.products);
         // products_state_clone.set(current_state_clone_update.products.clone());
     }, current_state.clone());
 

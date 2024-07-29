@@ -2,6 +2,7 @@ mod app;
 mod views;
 mod data;
 mod components;
+mod utils;
 
 use app::App;
 

@@ -18,7 +18,6 @@ pub fn Popover(props: &PopoverProps) -> Html {
 
     // Close the popover when clicking outside of it
     let on_click_outside = {
-        log::info!("Clicked outside");
         let show_popover = show_popover.clone();
         Callback::from(move |_: MouseEvent| {
             show_popover.set(false);

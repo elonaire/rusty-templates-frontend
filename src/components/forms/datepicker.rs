@@ -156,11 +156,6 @@ fn Calendar(props: &CalendarProps) -> Html {
         let current_year = current_year.clone();
         let current_month = current_month.clone();
         move || {
-            log::info!(
-                "current month: {:?}, current year: {:?}",
-                current_month.clone(),
-                current_year.clone()
-            );
             match NaiveDate::from_ymd_opt(*current_year, *current_month + 1, 1) {
                 Some(date) => date
                     .signed_duration_since(
@@ -181,7 +176,6 @@ fn Calendar(props: &CalendarProps) -> Html {
             let date = NaiveDate::from_ymd_opt(*current_year, *current_month, day);
             if day == 1 {
                 let weekday = date.unwrap().weekday();
-                log::info!("Weekday: {:?}", weekday);
                 calendar_adjustment = match weekday {
                     Weekday::Sun => 0,
                     Weekday::Mon => 1,

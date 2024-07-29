@@ -6,7 +6,7 @@ use crate::{
     app::{AppState, StateAction},
     data::{
         graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::order::{CheckoutPayload, CheckoutResponse, UpdateCartPayload, UpdateCartResponse},
+        models::order::{CheckoutPayload, CheckoutResponse, GetCartResponse, GetProductsIdsResponse, GetProductsIdsVar, UpdateCartPayload, UpdateCartResponse},
     },
 };
 
@@ -17,7 +17,6 @@ pub async fn add_to_cart(
     let mut auth_headers = HashMap::new();
     auth_headers.insert("Authorization".to_string(), format!("Bearer {}", state_clone.auth_details.token.clone()));
 
-    log::info!("auth_headers: {:?}", auth_headers);
     let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
 
     let query = r#"
@@ -34,8 +33,6 @@ pub async fn add_to_cart(
         UpdateCartPayload,
     >(Some(auth_headers), endpoint, query, payload)
     .await;
-
-    log::info!("Enters here: {:?}", cart);
 
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
@@ -54,7 +51,6 @@ pub async fn checkout(
     let mut auth_headers = HashMap::new();
     auth_headers.insert("Authorization".to_string(), format!("Bearer {}", state_clone.auth_details.token.clone()));
 
-    log::info!("auth_headers: {:?}", auth_headers);
     let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
 
     let query = r#"
@@ -69,11 +65,74 @@ pub async fn checkout(
     >(Some(auth_headers), endpoint, query, payload)
     .await;
 
-    log::info!("Enters here: {:?}", payment_url);
-
     state_clone.dispatch(StateAction::UpdateCheckoutUrl(
         match payment_url.get_data() {
             Some(data) => data.create_order.clone(),
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
+
+pub async fn get_product_external_ids(
+    state_clone: &UseReducerHandle<AppState>,
+) -> Result<(), Error> {
+    let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query CartQuery($cartId: String!) {
+                getProductExternalIds(cartId: $cartId)
+            }
+        "#;
+    println!("state_clone.cart.id.clone(){:?}", state_clone.cart.id.clone());
+
+    let vars = GetProductsIdsVar {
+        cart_id: state_clone.cart.id.clone().unwrap()
+    };
+
+    let products_ids = perform_mutation_or_query_with_vars::<
+        GetProductsIdsResponse,
+        GetProductsIdsVar
+    >(None, endpoint, query, vars)
+    .await;
+
+    state_clone.dispatch(StateAction::UpdateCartProductsIds(
+        match products_ids.get_data() {
+            Some(data) => data.get_product_external_ids.clone(),
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
+
+pub async fn get_cart(
+    state_clone: &UseReducerHandle<AppState>,
+) -> Result<(), Error> {
+    let mut auth_headers = HashMap::new();
+    auth_headers.insert("Authorization".to_string(), format!("Bearer {}", state_clone.auth_details.token.clone()));
+
+    let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query CartQuery {
+                getCart {
+                    id
+                    totalAmount
+                    archived
+                }
+            }
+        "#;
+
+    let cart = perform_query_without_vars::<
+        GetCartResponse,
+    >(Some(auth_headers), endpoint, query)
+    .await;
+
+    state_clone.dispatch(StateAction::UpdateCart(
+        match cart.get_data() {
+            Some(data) => data.get_cart.clone(),
             None => Default::default(),
         },
     ));
