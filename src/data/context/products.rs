@@ -23,6 +23,7 @@ pub async fn get_products(
                     price
                     screenshot
                     useCase
+                    slug
                 }
             }
         "#;
@@ -34,8 +35,14 @@ pub async fn get_products(
 
     state_clone.dispatch(StateAction::UpdateProducts(
         match products.get_data() {
-            Some(data) => data.get_products.clone(),
-            None => Default::default(),
+            Some(data) => {
+
+                data.get_products.clone()
+            },
+            None => {
+
+                Default::default()
+            },
         },
     ));
 
@@ -72,6 +79,50 @@ pub async fn get_products_by_ids(
     state_clone.dispatch(StateAction::UpdateCartProducts(
         match products.get_data() {
             Some(data) => data.get_products_by_ids.clone(),
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
+
+pub async fn get_product_by_slug(
+    state_clone: &UseReducerHandle<AppState>,
+    slug: &String
+) -> Result<(), Error> {
+    let endpoint = option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query ProductQuery($slug: String) {
+                getProductBySlug(slug: $slug) {
+                    id
+                    name
+                    slug
+                    price
+                    previewLink
+                    screenshot
+                    framework
+                    applicationLayer
+                    uiFramework
+                }
+            }
+        "#;
+
+    let vars = GetProductBySlugVar {
+        slug: slug.clone()
+    };
+
+    let product = perform_mutation_or_query_with_vars::<
+        GetProductBySlugResponse,
+        GetProductBySlugVar
+    >(None, endpoint, query, vars)
+    .await;
+
+    log::info!("product: {:?}", product);
+
+    state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+        match product.get_data() {
+            Some(data) => data.get_product_by_slug.clone(),
             None => Default::default(),
         },
     ));

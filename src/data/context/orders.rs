@@ -6,7 +6,7 @@ use crate::{
     app::{AppState, StateAction},
     data::{
         graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::order::{CheckoutPayload, CheckoutResponse, GetCartResponse, GetProductsIdsResponse, GetProductsIdsVar, UpdateCartPayload, UpdateCartResponse},
+        models::order::{CheckoutPayload, CheckoutResponse, GetCartResponse, GetLicensesResponse, GetProductsIdsResponse, GetProductsIdsVar, GetRawCartProductsResponse, GetRawCartProductsVar, UpdateCartPayload, UpdateCartResponse},
     },
 };
 
@@ -20,8 +20,8 @@ pub async fn add_to_cart(
     let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
 
     let query = r#"
-            mutation CartMutation($externalProductId: String!, $cartOperation: CartOperation!) {
-            createOrUpdateCart(externalProductId: $externalProductId, cartOperation: $cartOperation) {
+            mutation CartMutation($externalProductId: String!, $cartOperation: CartOperation!, $licenseId: String) {
+            createOrUpdateCart(externalProductId: $externalProductId, cartOperation: $cartOperation, licenseId: $licenseId) {
                     id
                     totalAmount
                 }
@@ -33,6 +33,8 @@ pub async fn add_to_cart(
         UpdateCartPayload,
     >(Some(auth_headers), endpoint, query, payload)
     .await;
+
+    log::info!("{:?}", cart);
 
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
@@ -88,7 +90,7 @@ pub async fn get_product_external_ids(
     println!("state_clone.cart.id.clone(){:?}", state_clone.cart.id.clone());
 
     let vars = GetProductsIdsVar {
-        cart_id: state_clone.cart.id.clone().unwrap()
+        cart_id: state_clone.cart.id.clone().unwrap_or("".into())
     };
 
     let products_ids = perform_mutation_or_query_with_vars::<
@@ -133,6 +135,73 @@ pub async fn get_cart(
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
             Some(data) => data.get_cart.clone(),
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
+
+pub async fn get_licenses(
+    state_clone: &UseReducerHandle<AppState>,
+) -> Result<(), Error> {
+    let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query OrderQuery {
+                getLicenses{
+                    id
+                    name
+                    priceFactor
+                    shortDescription
+                }
+            }
+        "#;
+
+    let licenses = perform_query_without_vars::<
+        GetLicensesResponse,
+    >(None, endpoint, query)
+    .await;
+
+    state_clone.dispatch(StateAction::UpdateLicenses(
+        match licenses.get_data() {
+            Some(data) => data.get_licenses.clone(),
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
+
+pub async fn get_raw_cart_products(
+    state_clone: &UseReducerHandle<AppState>,
+    cart_id: String
+) -> Result<(), Error> {
+    let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query OrderQuery($cartId: String!) {
+                getRawCartProducts(cartId: $cartId){
+                    id
+                    license
+                    quantity
+                }
+            }
+        "#;
+
+    let vars = GetRawCartProductsVar {
+        cart_id,
+    };
+
+    let licenses = perform_mutation_or_query_with_vars::<
+        GetRawCartProductsResponse,
+        GetRawCartProductsVar
+    >(None, endpoint, query, vars)
+    .await;
+
+    state_clone.dispatch(StateAction::UpdateRawCartProducts(
+        match licenses.get_data() {
+            Some(data) => data.get_raw_cart_products.clone(),
             None => Default::default(),
         },
     ));

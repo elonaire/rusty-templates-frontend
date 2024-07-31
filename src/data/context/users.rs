@@ -47,7 +47,6 @@ pub async fn sign_in(
 pub async fn get_new_token(
     state_clone: &UseReducerHandle<AppState>,
 ) -> Result<(), Error> {
-
     match retrieve_new_token(&state_clone.auth_details.token).await {
         Ok(new_token) => {
             let details = AuthDetails {
@@ -59,6 +58,7 @@ pub async fn get_new_token(
         },
         Err(_e) => {}
     };
+
 
     Ok(())
 }

@@ -2,6 +2,9 @@ use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
+use crate::data::context::orders::get_cart;
+use crate::data::context::orders::get_product_external_ids;
+use crate::data::context::products::get_products_by_ids;
 use crate::{app::{Route, AppStateContext}, components::badge::Badge};
 
 #[function_component]
@@ -20,8 +23,15 @@ pub fn TopNav() -> Html {
         })
     };
 
+    let current_state_clone_update = current_state.clone();
     use_effect_with_deps(move |_| {
+        wasm_bindgen_futures::spawn_local(async move {
+            let _cart = get_cart(&current_state_clone_update).await;
 
+            let _cart_product_ids = get_product_external_ids(&current_state_clone_update).await;
+
+            let _cart_products = get_products_by_ids(&current_state_clone_update).await;
+        });
     }, current_state.clone());
 
 
@@ -35,6 +45,16 @@ pub fn TopNav() -> Html {
                     </Link<Route>>
                     <div class="hidden md:flex items-center">
                         <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Landing}>{"Home"}</Link<Route>>
+                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Store}>{"Templates"}</Link<Route>>
+                        {
+                            if current_state.auth_details.token.is_empty() {
+                                html! {
+                                    <Link<Route> classes={"px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white"} to={Route::SignIn}>{"Sign In"}</Link<Route>>
+                                }
+                            } else {
+                                html! {}
+                            }
+                        }
                         // <a href="#templates" class="text-gray-700 px-4">{"Templates"}</a>
                         // <a href="#contact" class="text-gray-700 px-4">{"Contact"}</a>
                         <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Cart}>
@@ -59,6 +79,16 @@ pub fn TopNav() -> Html {
                     </svg>
                 </button>
                 <Link<Route> classes={"text-white text-center text-xl"} to={Route::Landing}>{"Home"}</Link<Route>>
+                <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Store}>{"Templates"}</Link<Route>>
+                {
+                    if current_state.auth_details.token.is_empty() {
+                        html! {
+                            <Link<Route> classes={"px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white"} to={Route::SignIn}>{"Sign In"}</Link<Route>>
+                        }
+                    } else {
+                        html! {}
+                    }
+                }
                 // <a href="#templates" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Templates"}</a>
                 // <a href="#contact" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Contact"}</a>
                 <Link<Route> classes={"text-white flex items-center justify-center text-xl"} to={Route::Cart}>

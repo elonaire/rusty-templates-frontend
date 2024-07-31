@@ -10,6 +10,8 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub slug: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "previewLink")]
     pub preview_link: Option<String>,
@@ -47,7 +49,7 @@ pub enum ApplicationLayer {
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
 pub enum UiFramework {
-    #[serde(rename = "Rusty UI")]
+    #[serde(rename = "RustyUI")]
     RustyUI,
 }
 
@@ -56,11 +58,11 @@ pub enum UseCase {
     Dashboard,
     Ecommerce,
     Admin,
-    #[serde(rename = "Ecommerce Admin")]
+    #[serde(rename = "EcommerceAdmin")]
     EcommerceAdmin,
-    #[serde(rename = "Finance Admin")]
+    #[serde(rename = "FinanceAdmin")]
     FinanceAdmin,
-    #[serde(rename = "IoT Admin")]
+    #[serde(rename = "IoTAdmin")]
     IoTAdmin,
 }
 
@@ -80,4 +82,15 @@ pub struct GetProductsByIdsResponse {
 pub struct GetProductsByIdsVar {
     #[serde(rename = "productIds")]
     pub product_ids: Vec<String>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GetProductBySlugResponse {
+    #[serde(rename = "getProductBySlug")]
+    pub get_product_by_slug: Product,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GetProductBySlugVar {
+    pub slug: String
 }

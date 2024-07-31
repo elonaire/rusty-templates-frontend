@@ -16,6 +16,8 @@ pub struct RadioInputFieldProps {
     #[prop_or(Callback::noop())]
     pub oninput: Callback<InputEvent>,
     pub id_attr: String,
+    #[prop_or_default]
+    pub children: Children,
 }
 
 #[function_component]
@@ -29,14 +31,15 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
         required,
         placeholder,
         oninput,
-        id_attr
+        id_attr,
+        children
     } = props;
 
     let display_error = use_state(|| false);
 
     html! {
         <div class="mb-4">
-            <label class="inline-flex items-center gap-2 text-gray-700 text-sm font-bold" for={id_attr.clone()}>
+            <label class="inline-flex items-center gap-2 text-gray-700 text-sm cursor-pointer" for={id_attr.clone()}>
                 <input
                     class="leading-tight rounded-full border-gray-300 text-blue-950 shadow-sm focus:border-blue-950 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
                     type="radio"
@@ -49,16 +52,19 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
                     autocomplete="on"
                     id={id_attr.clone()}
                 />
-                <span>
-                    { label }
-                {
-                    if *required {
-                        html!{ <span class="text-red-500">{ "*" }</span> }
-                    } else {
-                        html!{}
+                <div class="flex flex-col">
+                    <span>
+                        { label }
+                    {
+                        if *required {
+                            html!{ <span class="text-red-500">{ "*" }</span> }
+                        } else {
+                            html!{}
+                        }
                     }
-                }
-                </span>
+                    </span>
+                    { for props.children.iter() }
+                </div>
             </label>
 
             <p class="text-red-500 text-xs italic">{

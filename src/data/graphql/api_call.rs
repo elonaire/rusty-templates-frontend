@@ -16,6 +16,8 @@ impl<T> GraphQLResponse<T> {
             _ => None,
         }
     }
+
+    // TODO: Implement get_error
 }
 
 pub async fn perform_query_without_vars<R: for<'de> Deserialize<'de>>(

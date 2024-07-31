@@ -16,3 +16,5 @@ pub mod user_profile_nav;
 pub mod wizards;
 pub mod hocs;
 pub mod nav;
+pub mod loading_spinner;
+pub mod tabs;

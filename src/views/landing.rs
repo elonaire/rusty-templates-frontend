@@ -3,7 +3,11 @@ use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
+use crate::data::context::orders::get_cart;
+use crate::data::context::orders::get_product_external_ids;
 use crate::data::context::products::get_products;
+use crate::data::context::products::get_products_by_ids;
+use crate::data::context::users::get_new_token;
 use crate::data::models::template::Product;
 use crate::{app::{Route, AppStateContext}, components::{nav::top_nav::TopNav, button::BasicButton}};
 
@@ -33,6 +37,15 @@ pub fn Landing() -> Html {
                 if current_state_clone.products.is_empty() {
                     let _products = get_products(&current_state_clone).await;
                 }
+
+                if current_state_clone.cart.id.is_none() {
+                    let _cart = get_cart(&current_state_clone).await;
+                }
+
+                if current_state_clone.auth_details.token.is_empty() {
+                   let _new_token = get_new_token(&current_state_clone).await;
+                }
+
             }); // Await the async block
             || ()
         },
@@ -40,14 +53,23 @@ pub fn Landing() -> Html {
     );
 
     // let products_state_clone = products.clone();
-    let current_state_clone_update = current_state.clone();
-    use_effect_with_deps(move |_| {
-        // products_state_clone.set(current_state_clone_update.products.clone());
-    }, current_state.clone());
+    // let current_state_clone_update = current_state.clone();
+    // use_effect_with_deps(move |_| {
+    //     wasm_bindgen_futures::spawn_local(async move {
+    //         if current_state_clone_update.cart.id.is_some() {
+    //             let _cart_product_ids = get_product_external_ids(&current_state_clone_update).await;
+    //         }
+
+    //         if current_state_clone_update.cart_products.len() == 0 {
+    //             let _cart_products = get_products_by_ids(&current_state_clone_update).await;
+    //         }
+    //     });
+
+    // }, current_state.clone());
 
     html! {
         <>
-            <div class="bg-gray-100 min-h-screen">
+            <div class="bg-gray-100 min-h-svh">
                 <TopNav />
                 <main class="container mx-auto py-10">
                     <Hero />
@@ -71,7 +93,7 @@ pub fn Hero() -> Html {
             <h1 class="text-5xl font-bold mb-4">{"Do You Really Want to Reinvent?"}</h1>
             <p class="text-lg mb-8">{"Browse our collection of awesome Rust templates. Web (Frontend and Backend), Mobile & Desktop."}</p>
             // <a href="#templates" class="bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition">{"Shop Now"}</a>
-            <Link<Route> classes={classes!("bg-primary", "text-white", "px-6", "py-2", "rounded", "hover:bg-secondary", "transition")} to={Route::Store}>{"Shop Now"}</Link<Route>>
+            <Link<Route> classes={"bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition"} to={Route::Store}>{"Shop Now"}</Link<Route>>
         </section>
     }
 }

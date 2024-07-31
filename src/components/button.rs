@@ -40,7 +40,7 @@ pub fn BasicButton(props: &BasicButtonProps) -> Html {
         }
     };
     html! {
-        <button type={button_type.clone()} class={format!("font-bold py-2 px-4 rounded {}", style_ext)} onclick={onclick.clone()} disabled={disabled.clone()}>
+        <button type={button_type.clone()} class={format!("font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed {}", style_ext)} onclick={onclick.clone()} disabled={disabled.clone()}>
             <span class={format!("flex flex-row items-center justify-center {}", button_content_styles)}>
                 {
                     match icon {

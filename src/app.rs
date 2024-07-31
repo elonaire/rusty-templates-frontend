@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use yew::prelude::*;
-use crate::{data::models::{order::Cart, template::Product, user::AuthDetails}, views::{cart::CartPage, landing::Landing, sign_in::SignInPage, sign_up::SignUpPage, store::StorePage, thankyou::ThankYouPage}};
+use crate::{data::models::{order::{Cart, CartProduct, License}, template::Product, user::AuthDetails}, views::{account::AccountPage, cart::CartPage, details::TemplateDetails, landing::Landing, sign_in::SignInPage, sign_up::SignUpPage, store::StorePage, thankyou::ThankYouPage}};
 use yew_router::prelude::*;
 
 #[derive(Clone, Routable, PartialEq, Debug)]
@@ -18,10 +18,23 @@ pub enum Route {
     SignUp,
     #[at("/account")]
     Account,
+    #[at("/template")]
+    TemplateRoot,
+    #[at("/template/*")]
+    TemplateSlug,
     #[at("/thankyou")]
     ThankYou,
     #[not_found]
     #[at("/404")]
+    NotFound,
+}
+
+#[derive(Clone, Routable, PartialEq, Debug, Eq)]
+pub enum TemplateRoute {
+    #[at("/template/details/:id")]
+    TemplateDetails { id: String },
+    #[not_found]
+    #[at("/template/404")]
     NotFound,
 }
 
@@ -37,6 +50,9 @@ pub enum StateAction {
     UpdateCartProducts(Vec<Product>),
     UpdateCheckoutUrl(String),
     UpdateCartProductsIds(Vec<String>),
+    UpdateCurrentProductDetails(Product),
+    UpdateLicenses(Vec<License>),
+    UpdateRawCartProducts(Vec<CartProduct>),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
@@ -46,7 +62,10 @@ pub struct AppState {
     pub cart_products: Vec<Product>,
     pub cart: Cart,
     pub checkout_url: String,
-    pub cart_products_ids: Vec<String>
+    pub cart_products_ids: Vec<String>,
+    pub current_product_details: Product,
+    pub licenses: Vec<License>,
+    pub raw_cart_products: Vec<CartProduct>,
 }
 
 impl Reducible for AppState {
@@ -91,6 +110,24 @@ impl Reducible for AppState {
                     cart_products_ids,
                     ..self.as_ref().clone()
                 }
+            },
+            StateAction::UpdateCurrentProductDetails(current_product_details) => {
+                AppState {
+                    current_product_details,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateLicenses(licenses) => {
+                AppState {
+                    licenses,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateRawCartProducts(raw_cart_products) => {
+                AppState {
+                    raw_cart_products,
+                    ..self.as_ref().clone()
+                }
             }
         };
 
@@ -107,9 +144,18 @@ pub fn switch(routes: Route) -> Html {
         Route::Cart => html! { <CartPage /> },
         Route::SignIn => html! { <SignInPage /> },
         Route::SignUp => html! { <SignUpPage /> },
-        Route::Account => html! { <h1>{ "Account" }</h1> },
+        Route::Account => html! { <AccountPage /> },
+        // Route::TemplateDetails => html! { <TemplateDetails /> },
+        Route::TemplateRoot | Route::TemplateSlug => html! { <Switch<TemplateRoute> render={template_switch} /> },
         Route::ThankYou => html! { <ThankYouPage /> },
         Route::NotFound => html! { <h1>{ "404" }</h1> },
+    }
+}
+
+pub fn template_switch(routes: TemplateRoute) -> Html {
+    match routes {
+        TemplateRoute::TemplateDetails { id } => html! { <TemplateDetails {id} /> },
+        TemplateRoute::NotFound => html! {<Redirect<Route> to={Route::NotFound} />}
     }
 }
 

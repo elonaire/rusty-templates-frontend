@@ -6,7 +6,12 @@ module.exports = {
 		extend: {
       colors: {
         primary: '#C43A1F',
-        secondary: '#C41F57'
+        secondary: '#C48D1F',
+        scrollbar: {
+          DEFAULT: '#FFFFFF',
+          track: '#FFFFFF',
+          thumb: '#C43A1F',
+        },
       },
       height: {
         'screen-1/13': '7.692308svh',
