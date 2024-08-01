@@ -50,7 +50,7 @@ pub async fn get_new_token(
     match retrieve_new_token(&state_clone.auth_details.token).await {
         Ok(new_token) => {
             let details = AuthDetails {
-                token: new_token.strip_prefix("Bearer ").unwrap().to_string(),
+                token: new_token.strip_prefix("Bearer ").unwrap_or("").to_string(),
                 ..state_clone.auth_details.clone()
             };
             log::info!("{:?}", details);

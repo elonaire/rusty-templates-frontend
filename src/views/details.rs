@@ -79,6 +79,10 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                 let _cart = get_cart(&current_state_clone).await;
             }
 
+            if current_state_clone.cart.id.is_some() {
+               let _raw_products = get_raw_cart_products(&current_state_clone, current_state_clone.cart.id.clone().unwrap()).await;
+            }
+
             loading_clone.set(false);
         });
     }, ());
@@ -89,9 +93,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     use_effect_with_deps(move |_| {
         wasm_bindgen_futures::spawn_local(async move {
             loading_clone.set(true);
-            if current_state_clone_update.cart.id.is_some() {
-               let _raw_products = get_raw_cart_products(&current_state_clone_update, current_state_clone_update.cart.id.clone().unwrap()).await;
-            }
+
 
             let selected_license_clone = selected_license_clone.clone();
             if current_state_clone_update.current_product_details.id.is_some() && current_state_clone_update.raw_cart_products.len() > 0 {
@@ -108,22 +110,22 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
 
     html! {
         <>
-            <div class="bg-gray-100 min-h-svh">
+            <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <div class="container mx-auto py-10">
                     <h1 class="text-2xl font-bold my-2">{current_state.current_product_details.name.clone()}</h1>
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 space-x-4">
                         // Screenshot Section
                         <div class="md:col-span-5">
-                        <img src={current_state.current_product_details.screenshot.clone()} alt="Template Screenshot" class="object-cover rounded w-full h-full" />
+                        <img src={current_state.current_product_details.screenshot.clone()} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
                         </div>
 
                         // License and Actions Section
-                        <div class="md:col-span-3 flex flex-col space-y-4">
+                        <div class="md:col-span-3 flex flex-col gap-4">
                             <div class="border p-4 rounded shadow-md">
                                 <h3 class="text-lg font-semibold mb-2">{ "Choose License:" }</h3>
 
-                                <div class="flex flex-col space-y-2">
+                                <div class="flex flex-col justify-center space-y-2">
                                     {
                                         current_state.licenses.iter().map(|license|
                                             html!{
@@ -155,8 +157,6 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                                 // button_type={"submit".to_string()}
                                 icon_before={true} // if you have an icon before the button text, set it to true
                             />
-                            // <button class="w-full p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700">{ "Buy Now" }</button>
-                            // <button class="w-full p-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700">{ "Live Preview" }</button>
                         </div>
                     </div>
                 </div>

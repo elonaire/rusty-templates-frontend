@@ -122,10 +122,13 @@ pub fn Stepper(props: &StepperProps) -> Html {
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct StepProps {
     pub children: Children,
+    #[prop_or(false)]
+    pub next_step_active: bool,
 }
 
 #[function_component]
 pub fn Step(props: &StepProps) -> Html {
+
     html! {
         <>
             { props.children.iter().collect::<Html>() }

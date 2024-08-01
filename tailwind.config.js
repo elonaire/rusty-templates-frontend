@@ -4,8 +4,11 @@ module.exports = {
 
 	theme: {
 		extend: {
+		  fontFamily: {
+        'jost-sans': ['"Jost"', 'sans-serif'],
+      },
       colors: {
-        primary: '#C43A1F',
+        primary: '#FF8600',
         secondary: '#C48D1F',
         scrollbar: {
           DEFAULT: '#FFFFFF',

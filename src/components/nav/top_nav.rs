@@ -52,12 +52,20 @@ pub fn TopNav() -> Html {
                                     <Link<Route> classes={"px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white"} to={Route::SignIn}>{"Sign In"}</Link<Route>>
                                 }
                             } else {
-                                html! {}
+                                html! {
+                                    <Link<Route> classes={"text-gray-700 px-4"} to={Route::Account}>
+                                    <div class="py-1 px-4 ring-2 ring-secondary rounded flex flex-row gap-2">
+                                            <p>{"My Account"}</p>
+                                            <Icon class={classes!("text-secondary")} width={"1.5em".to_owned()} height={"1.5em".to_owned()} icon_id={IconId::FontAwesomeSolidCircleUser}/>
+                                        </div>
+                                    </Link<Route>>
+                                }
                             }
                         }
                         // <a href="#templates" class="text-gray-700 px-4">{"Templates"}</a>
                         // <a href="#contact" class="text-gray-700 px-4">{"Contact"}</a>
-                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Cart}>
+
+                        <Link<Route> classes={"text-gray-700 px-4"} to={Route::Cart}>
                             <Badge color={"bg-secondary"} text={current_state.cart_products.len().clone().to_string()}>
                                 <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
                             </Badge>
@@ -70,7 +78,7 @@ pub fn TopNav() -> Html {
                     </button>
                 </nav>
             </header>
-            <div class={format!("{} fixed inset-0 bg-gray-800 bg-opacity-75 z-50 p-6 flex flex-col space-y-4 {}",
+            <div class={format!("{} fixed inset-0 bg-gray-800 bg-opacity-85 z-50 p-6 flex flex-col space-y-4 {}",
                 if *is_menu_open { "flex" } else { "hidden" },
                 if *is_menu_open { "" } else { "hidden" })}>
                 <button class="self-end text-white" onclick={toggle_menu.clone()}>
@@ -79,11 +87,11 @@ pub fn TopNav() -> Html {
                     </svg>
                 </button>
                 <Link<Route> classes={"text-white text-center text-xl"} to={Route::Landing}>{"Home"}</Link<Route>>
-                <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Store}>{"Templates"}</Link<Route>>
+                <Link<Route> classes={"text-white text-center text-xl"} to={Route::Store}>{"Templates"}</Link<Route>>
                 {
                     if current_state.auth_details.token.is_empty() {
                         html! {
-                            <Link<Route> classes={"px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white"} to={Route::SignIn}>{"Sign In"}</Link<Route>>
+                            <Link<Route> classes={"px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white text-center"} to={Route::SignIn}>{"Sign In"}</Link<Route>>
                         }
                     } else {
                         html! {}
@@ -91,6 +99,9 @@ pub fn TopNav() -> Html {
                 }
                 // <a href="#templates" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Templates"}</a>
                 // <a href="#contact" class="text-white text-center text-xl" onclick={toggle_menu.clone()}>{"Contact"}</a>
+                <Link<Route> classes={"text-white flex items-center justify-center text-xl"} to={Route::Account}>
+                    <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::FontAwesomeSolidCircleUser}/>
+                </Link<Route>>
                 <Link<Route> classes={"text-white flex items-center justify-center text-xl"} to={Route::Cart}>
                     <Badge color={"bg-secondary"} text={current_state.cart_products.len().clone().to_string()}>
                         <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>

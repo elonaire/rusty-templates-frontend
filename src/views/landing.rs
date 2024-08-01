@@ -3,6 +3,7 @@ use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
+use crate::components::cookie_consent::CookieConsent;
 use crate::data::context::orders::get_cart;
 use crate::data::context::orders::get_product_external_ids;
 use crate::data::context::products::get_products;
@@ -69,9 +70,10 @@ pub fn Landing() -> Html {
 
     html! {
         <>
-            <div class="bg-gray-100 min-h-svh">
+            <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <main class="container mx-auto py-10">
+                    <CookieConsent />
                     <Hero />
                     <TemplatesList templates={current_state.products.to_vec()} />
                     <ContactSection />

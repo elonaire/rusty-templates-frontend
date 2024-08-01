@@ -87,7 +87,7 @@ pub fn SignInPage() -> Html {
     );
 
     html! {
-        <div class="min-h-screen flex">
+        <div class="min-h-screen flex font-jost-sans">
             <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 bg-white">
                 <img class="my-4 w-32" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="Logo" />
                 <h1 class="text-4xl font-bold my-4">{"Log In"}</h1>

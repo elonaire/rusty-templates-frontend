@@ -52,7 +52,7 @@ pub fn StorePage() -> Html {
 
     html! {
         <>
-            <div class="bg-gray-100 min-h-svh">
+            <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <main class="container mx-auto py-10">
                     <div class="flex">
@@ -81,7 +81,7 @@ pub fn FilterMenu() -> Html {
     let categories = use_state_eq(|| vec![] as Vec<SelectOption>);
 
     html! {
-        <div class="max-w-[1200px] p-6">
+        <div class="p-6">
             <h2 class="text-xl font-semibold mb-4">{"Filters"}</h2>
             <div class="space-y-2">
                 <div>
@@ -116,10 +116,10 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
 
     html! {
         <div class="bg-white shadow-md rounded">
-        <img src={props.product.screenshot.clone()} alt={props.product.name.clone()} class="w-full h-40 object-cover mb-4 rounded-t" />
-            <div class="p-2">
-                <div class="flex flex-row items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold">{&props.product.name.clone().unwrap()}</h3>
+        <img src={props.product.screenshot.clone()} alt={props.product.name.clone()} class="w-full h-auto object-cover mb-4 rounded-t" />
+            <div class="grid grid-cols-1 p-2">
+                <div class="flex flex-row justify-between mb-2 min-h-16">
+                    <p class="text-lg font-semibold line-clamp-2">{&props.product.name.clone().unwrap()}</p>
                     <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
                 </div>
                 <div class="flex flex-row items-center justify-between gap-2">
@@ -136,7 +136,7 @@ pub fn TemplatesList(TemplatesListProps { templates }: &TemplatesListProps) -> H
 
     html! {
         <section id="templates" class="">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {for templates.into_iter().map(|template| html! {
                     <TemplateCard product={template.clone()} />
                 })}

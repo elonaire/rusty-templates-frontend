@@ -104,73 +104,99 @@ pub fn CartPage() -> Html {
 
     html! {
         <>
-            <div class="bg-gray-100 min-h-svh">
+            <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <div class="container mx-auto py-10">
-                    <div class="flex mt-4 items-center justify-center">
+                    <div class="grid sm:grid-cols-1 md:grid-cols-8 mt-4 items-center justify-center">
                         {
                             if *loading {
                                 html!{ <LoadingSpinner /> }
                             } else { html!{} }
                         }
-                        <Card theme={"w-full"}>
-                            <Stepper indicator_no_theme_ext={"bg-primary"} indicator_text_theme_ext={"text-primary"} button_theme_ext={"bg-primary"} on_click_final_button={on_checkout} final_button_text={"Checkout"} steps_titles={vec!["Billing Details".to_string(), "Billing Address".to_string(), "Preview".to_string()]}>
-                                <Step>
-                                    <div class="grid grid-cols-1 gap-4 w-full">
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                            <InputField ext_input_styles={""} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
-                                            <InputField label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
-                                            <InputField required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
+                        <div class="md:col-span-5 h-full">
+                            <Card theme={"w-full h-full"}>
+                                <Stepper indicator_no_theme_ext={"bg-primary"} indicator_text_theme_ext={"text-primary"} button_theme_ext={"bg-primary"} on_click_final_button={on_checkout} final_button_text={"Checkout"} steps_titles={vec!["Billing Details".to_string(), "Billing Address".to_string(), "Preview".to_string()]}>
+                                    <Step>
+                                        <div class="grid grid-cols-1 gap-4 w-full">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                                <InputField ext_input_styles={""} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
+                                                <InputField label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
+                                                <InputField required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
+                                            </div>
+                                            <InputField required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
                                         </div>
-                                        <InputField required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
-                                    </div>
-                                </Step>
-                                <Step>
-                                    <div class="grid grid-cols-6 gap-2 w-full">
-                                        <div class="col-span-6">
-                                            <InputField required={true} label={"Country"} name={"card_number"} field_type={InputFieldType::Text} />
+                                    </Step>
+                                    <Step>
+                                        <div class="grid grid-cols-6 gap-2 w-full">
+                                            <div class="col-span-6">
+                                                <InputField required={true} label={"Country"} name={"card_number"} field_type={InputFieldType::Text} />
+                                            </div>
                                         </div>
-                                    </div>
-                                </Step>
-                                <Step>
-                                    <div class="grid grid-cols-1 w-full">
-                                    <table class="border-collapse w-full">
-                                        <thead>
-                                            <tr>
-                                                <th class="border border-transparent p-2 text-left">{"Product"}</th>
-                                                <th class="border border-transparent p-2 text-left">{"Subtotal"}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                    </Step>
+                                    <Step>
+                                        <div>
+                                            <table class="border-collapse w-full">
+                                                <tr>
+                                                    <td class="border border-transparent p-2 font-semibold">{"First Name"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                                                    <td class="border border-transparent p-2 font-semibold">{"Middle Name"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-transparent p-2 font-semibold">{"Last Name"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.vat)}</td>
+                                                    <td class="border border-transparent p-2 font-semibold">{"Email"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-transparent p-2 font-semibold">{"Country"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.total)}</td>
+                                                    <td class="border border-transparent p-2 font-semibold">{"Address"}</td>
+                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </Step>
+                                </Stepper>
+                            </Card>
+                        </div>
+                        <div class="md:col-span-3">
+                            <div class="grid grid-cols-1 w-full p-2">
+                                <table class="border-collapse w-full">
+                                    <thead>
+                                        <tr>
+                                            <th class="border border-transparent p-2 text-left">{"Template"}</th>
+                                            <th class="border border-transparent p-2 text-left">{"Price"}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                            {
-                                                current_state.cart_products.iter().map(|product| {
-                                                    html! {
-                                                        <tr>
-                                                            <td class="border border-transparent p-2">{format!("{} x 1", product.name.clone().unwrap())}</td>
-                                                            <td class="border border-transparent p-2">{format!("${}", product.price.clone().unwrap())}</td>
-                                                        </tr>
-                                                    }
-                                                }).collect::<Html>()
-                                            }
-                                            <tr>
-                                                <td class="border border-transparent p-2 font-semibold">{"Subtotal"}</td>
-                                                <td class="border border-transparent p-2">{format!("${:.2}", cart_totals.subtotal)}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border border-transparent p-2 font-semibold">{"VAT"}</td>
-                                                <td class="border border-transparent p-2">{format!("${:.2}", cart_totals.vat)}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border border-transparent p-2 font-semibold">{"Total"}</td>
-                                                <td class="border border-transparent p-2">{format!("${:.2}", cart_totals.total)}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                </Step>
-                            </Stepper>
-                        </Card>
+                                        {
+                                            current_state.cart_products.iter().map(|product| {
+                                                html! {
+                                                    <tr>
+                                                        <td class="border border-transparent p-2">{format!("{} ", product.name.clone().unwrap())}<span>{"\u{00D7} 1"}</span></td>
+                                                        <td class="border border-transparent p-2">{format!("${}", product.price.clone().unwrap())}</td>
+                                                    </tr>
+                                                }
+                                            }).collect::<Html>()
+                                        }
+                                        <tr class="border-t-2 border-secondary">
+                                            <td class="border border-transparent p-2 pt-6 font-semibold">{"Subtotal"}</td>
+                                            <td class="border border-transparent p-2 pt-6">{format!("${:.2}", cart_totals.subtotal)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-transparent p-2 font-semibold">{"VAT"}</td>
+                                            <td class="border border-transparent p-2">{format!("${:.2}", cart_totals.vat)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-transparent p-2 font-semibold">{"Total"}</td>
+                                            <td class="border border-transparent p-2">{format!("${:.2}", cart_totals.total)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

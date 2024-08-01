@@ -18,3 +18,4 @@ pub mod hocs;
 pub mod nav;
 pub mod loading_spinner;
 pub mod tabs;
+pub mod cookie_consent;
