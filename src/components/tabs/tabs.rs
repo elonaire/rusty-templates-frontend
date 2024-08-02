@@ -7,8 +7,8 @@ pub struct TabsProps {
     pub vertical: bool,
 }
 
-#[function_component(Tabs)]
-pub fn tabs(props: &TabsProps) -> Html {
+#[function_component]
+pub fn Tabs(props: &TabsProps) -> Html {
     html! {
         <div class={classes!(if props.vertical { "flex flex-row" } else { "flex flex-col" })}>
             { for props.children.iter() }
@@ -22,8 +22,8 @@ pub struct TabProps {
     pub children: Children,
 }
 
-#[function_component(Tab)]
-pub fn tab(props: &TabProps) -> Html {
+#[function_component]
+pub fn Tab(props: &TabProps) -> Html {
     let onclick = Callback::from(|_| {
         // Implement your own logic for tab selection
     });

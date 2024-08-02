@@ -12,8 +12,8 @@ pub struct UpdateCartPayload {
     pub external_product_id: String,
     #[serde(rename = "cartOperation")]
     pub cart_operation: CartOperation,
-    #[serde(rename = "licenseId")]
-    pub license_id: String,
+    #[serde(rename = "externalLicenseId")]
+    pub external_license_id: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
@@ -105,6 +105,8 @@ pub struct CartProduct {
     pub quantity: u32,
     #[serde(rename = "extProductId")]
     pub ext_product_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub artifact: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]

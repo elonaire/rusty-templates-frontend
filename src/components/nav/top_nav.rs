@@ -54,9 +54,9 @@ pub fn TopNav() -> Html {
                             } else {
                                 html! {
                                     <Link<Route> classes={"text-gray-700 px-4"} to={Route::Account}>
-                                    <div class="py-1 px-4 ring-2 ring-secondary rounded flex flex-row gap-2">
+                                    <div class="py-1 px-4 ring-2 ring-primary rounded flex flex-row gap-2">
                                             <p>{"My Account"}</p>
-                                            <Icon class={classes!("text-secondary")} width={"1.5em".to_owned()} height={"1.5em".to_owned()} icon_id={IconId::FontAwesomeSolidCircleUser}/>
+                                            <Icon class={classes!("text-primary")} width={"1.5em".to_owned()} height={"1.5em".to_owned()} icon_id={IconId::FontAwesomeSolidCircleUser}/>
                                         </div>
                                     </Link<Route>>
                                 }
@@ -66,7 +66,7 @@ pub fn TopNav() -> Html {
                         // <a href="#contact" class="text-gray-700 px-4">{"Contact"}</a>
 
                         <Link<Route> classes={"text-gray-700 px-4"} to={Route::Cart}>
-                            <Badge color={"bg-secondary"} text={current_state.cart_products.len().clone().to_string()}>
+                            <Badge color={"bg-primary"} text={current_state.cart_products.len().clone().to_string()}>
                                 <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
                             </Badge>
                         </Link<Route>>

@@ -18,6 +18,8 @@ pub struct RadioInputFieldProps {
     pub id_attr: String,
     #[prop_or_default]
     pub children: Children,
+    #[prop_or_default]
+    pub input_style_ext: String,
 }
 
 #[function_component]
@@ -32,7 +34,8 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
         placeholder,
         oninput,
         id_attr,
-        children
+        children,
+        input_style_ext
     } = props;
 
     let display_error = use_state(|| false);
@@ -41,7 +44,7 @@ pub fn RadioInputField(props: &RadioInputFieldProps) -> Html {
         <div class="mb-4">
             <label class="inline-flex items-center gap-2 text-gray-700 text-sm cursor-pointer" for={id_attr.clone()}>
                 <input
-                    class="leading-tight rounded-full border-gray-300 text-blue-950 shadow-sm focus:border-blue-950 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                    class={format!("leading-tight rounded-full border-gray-300 text-blue-950 shadow-sm focus:border-blue-950 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50 {}", input_style_ext)}
                     type="radio"
                     value={initial_value.clone()}
                     name={name.clone()}

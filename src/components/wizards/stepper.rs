@@ -14,7 +14,9 @@ pub struct StepperProps {
     #[prop_or("".to_string())]
     pub indicator_no_theme_ext: String,
     #[prop_or("".to_string())]
-    pub indicator_text_theme_ext: String
+    pub indicator_text_theme_ext: String,
+    #[prop_or(Callback::noop())]
+    pub on_click_next: Callback<usize>,
 }
 
 // Stepper Component
@@ -39,6 +41,7 @@ pub fn Stepper(props: &StepperProps) -> Html {
     };
 
     let onclick_next = {
+        props.on_click_next.emit(*current_step);
         let current_step = current_step.clone();
         Callback::from(move |_| {
             if *current_step < step_count - 1 {

@@ -9,7 +9,7 @@ module.exports = {
       },
       colors: {
         primary: '#C48D1F',
-        secondary: '#A9C41E',
+        secondary: '#6C96E8',
         scrollbar: {
           DEFAULT: '#FFFFFF',
           track: '#FFFFFF',

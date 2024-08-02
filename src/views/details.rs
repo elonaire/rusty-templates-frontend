@@ -28,7 +28,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                 let payload = UpdateCartPayload {
                     external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
                     cart_operation: CartOperation::AddProduct,
-                    license_id: value_clone.clone()
+                    external_license_id: value_clone.clone()
                 };
                 let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
                 // navigator_clone.push(&Route::Cart);
@@ -48,7 +48,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                 let payload = UpdateCartPayload {
                     external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
                     cart_operation: CartOperation::AddProduct,
-                    license_id: selected_license_val
+                    external_license_id: selected_license_val
                 };
                 let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
                 navigator_clone.push(&Route::Cart);
@@ -129,7 +129,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                                     {
                                         current_state.licenses.iter().map(|license|
                                             html!{
-                                                <RadioInputField oninput={on_license_change.clone()} initial_value={license.id.clone()} id_attr={format!("license{}", license.name.clone())} label={license.short_description.clone()} name={"license"}>
+                                                <RadioInputField input_style_ext={"text-primary focus:border-primary focus:ring-indigo-200"} oninput={on_license_change.clone()} initial_value={license.id.clone()} id_attr={format!("license{}", license.name.clone())} label={license.short_description.clone()} name={"license"}>
                                                     <p class="font-bold text-xl">{format!("${}", current_state.current_product_details.price.clone().unwrap() * license.price_factor)}</p>
                                                 </RadioInputField>
                                             }

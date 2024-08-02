@@ -35,7 +35,7 @@ pub fn SignInPage() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
 
                 let _sign_in = sign_in(&current_state_clone, payload).await;
-                navigator_clone.push(&Route::Store);
+                navigator_clone.push(&Route::Cart);
             });
 
         })

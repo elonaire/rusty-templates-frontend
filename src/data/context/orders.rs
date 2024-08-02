@@ -20,8 +20,8 @@ pub async fn add_to_cart(
     let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
 
     let query = r#"
-            mutation CartMutation($externalProductId: String!, $cartOperation: CartOperation!, $licenseId: String) {
-            createOrUpdateCart(externalProductId: $externalProductId, cartOperation: $cartOperation, licenseId: $licenseId) {
+            mutation CartMutation($externalProductId: String!, $cartOperation: CartOperation!, $externalLicenseId: String) {
+            createOrUpdateCart(externalProductId: $externalProductId, cartOperation: $cartOperation, externalLicenseId: $externalLicenseId) {
                     id
                     totalAmount
                 }
