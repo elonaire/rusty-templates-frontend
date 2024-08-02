@@ -115,8 +115,30 @@ pub struct GetRawCartProductsVar {
     pub cart_id: String
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct GetOrderCartProductsVar {
+    pub status: OrderStatus
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetRawCartProductsResponse {
     #[serde(rename = "getRawCartProducts")]
     pub get_raw_cart_products: Vec<CartProduct>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetOrderCartProductsResponse {
+    #[serde(rename = "getCustomerOrdersByStatus")]
+    pub get_customer_orders_by_status: Vec<CartProduct>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
+pub enum OrderStatus {
+    Pending,
+    Confirmed,
+    Ready,
+    Completed,
+    Failed,
+    Refunded,
+    OnHold,
 }

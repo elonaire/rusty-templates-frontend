@@ -103,6 +103,7 @@ pub fn Hero() -> Html {
 #[function_component]
 pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
     let is_hovered = use_state(|| false);
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
 
     let on_mouse_over = {
         let is_hovered = is_hovered.clone();
@@ -123,7 +124,7 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
     html! {
         <div class="rounded">
             <div onmouseover={on_mouse_over} onmouseout={on_mouse_out} class="relative cursor-pointer">
-                <img src={props.product.screenshot.clone().unwrap()} alt={props.product.name.clone().unwrap()} class="w-full h-72 object-cover mb-2 rounded" />
+                <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap())} alt={props.product.name.clone().unwrap()} class="w-full h-72 object-cover mb-2 rounded" />
                 <button class={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)}>{"Live Preview"}</button>
             </div>
             <div class="p-2">

@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::{app::AppStateContext, components::nav::top_nav::TopNav, data::context::users::get_new_token};
+use crate::{app::AppStateContext, components::nav::top_nav::TopNav, data::{context::{orders::get_order_cart_products_by_status, products::get_products, users::get_new_token}, models::order::OrderStatus}};
 
 #[derive(Clone, PartialEq)]
 enum Tab {
@@ -29,9 +29,16 @@ pub fn AccountPage() -> Html {
     use_effect_with_deps(move |_| {
         loading_clone.set(true);
         wasm_bindgen_futures::spawn_local(async move {
+            if current_state_clone.products.is_empty() {
+                let _products = get_products(&current_state_clone).await;
+            }
 
             if current_state_clone.auth_details.token.is_empty() {
                let _new_token = get_new_token(&current_state_clone).await;
+            }
+
+            if current_state_clone.order_cart_products.is_empty() {
+               let _new_token = get_order_cart_products_by_status(&current_state_clone, OrderStatus::Confirmed).await;
             }
 
             loading_clone.set(false);
@@ -42,7 +49,7 @@ pub fn AccountPage() -> Html {
         <div class="bg-gray-100 min-h-svh font-jost-sans">
             <TopNav />
             <div class="container min-h-svh bg-gray-100 py-10 mx-auto">
-                <div class="mx-auto bg-white shadow-md rounded">
+                <div class="mx-auto bg-white shadow-md rounded min-h-72">
                     <div class="flex bg-gray-200 p-4 rounded-t">
                         <TabButton
                             active={notifications_active}
@@ -118,11 +125,52 @@ fn Notifications() -> Html {
 
 #[function_component]
 fn Orders() -> Html {
+    let current_state = use_context::<AppStateContext>().unwrap();
+
+    let download_file_uri = option_env!("FILES_SERVICE_DOWNLOAD_URL").expect("FILES_SERVICE_DOWNLOAD_URL env var not set");
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+
+    // use_effect_with_deps(move |_| {
+    //     wasm_bindgen_futures::spawn_local(async move {
+
+    //     });
+    // }, current_state.clone());
+
     html! {
-        <div>
-            <h2 class="text-xl font-bold mb-4">{ "Your Orders" }</h2>
-            <p>{ "Here are your purchased templates." }</p>
-            // Add your orders details here
+        <div class="container mx-auto p-4">
+            <h2 class="text-2xl font-bold mb-4">{ "Your Orders" }</h2>
+            <p class="mb-4">{ "Here are your purchased templates." }</p>
+            <div class="flex flex-col gap-2">
+            {
+                current_state.order_cart_products.iter().filter_map(|order| {
+                    // Find the product that matches the order's product ID
+                    current_state.products.iter().find(|product| {
+                        product.id.as_ref().map_or(false, |id| id == &order.ext_product_id)
+                    }).map(|product| {
+                        html! {
+                            <div class="flex flex-row border rounded shadow-lg w-full space-x-4">
+                                <div class="w-1/3">
+                                    <img src={format!("{}{}", view_file_uri, product.screenshot.clone().unwrap_or_else(|| String::from("fallback_image_url.png")))}
+                                         alt={product.name.clone().unwrap_or_else(|| String::from("Unnamed Product"))}
+                                         class="w-full h-auto object-cover rounded mb-2" />
+                                </div>
+                                <div class="">
+                                    <h3 class="text-lg font-semibold">{ product.name.clone().unwrap_or_else(|| String::from("Unnamed Product")) }</h3>
+                                    <a href={format!("{}{}", download_file_uri, order.artifact.clone().unwrap_or_else(|| String::from("#")))} class="px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white transition duration-200">
+                                        { "Download" }
+                                    </a>
+                                </div>
+                                <div class="">
+                                    <div class="text-yellow-500">
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    })
+                }).collect::<Html>()
+            }
+            </div>
         </div>
     }
 }

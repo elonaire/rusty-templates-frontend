@@ -104,6 +104,8 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
     let navigator = use_navigator().unwrap();
 
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+
     let navigator_clone = navigator.clone();
     let onclick_details = {
         let current_state_clone = current_state.clone();
@@ -116,7 +118,7 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
 
     html! {
         <div class="bg-white shadow-md rounded">
-        <img src={props.product.screenshot.clone()} alt={props.product.name.clone()} class="w-full h-auto object-cover mb-4 rounded-t" />
+        <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap_or("".into()))} alt={props.product.name.clone()} class="w-full h-auto object-cover mb-4 rounded-t" />
             <div class="grid grid-cols-1 p-2">
                 <div class="flex flex-row justify-between mb-2 min-h-16">
                     <p class="text-lg font-semibold line-clamp-2">{&props.product.name.clone().unwrap()}</p>

@@ -53,6 +53,7 @@ pub enum StateAction {
     UpdateCurrentProductDetails(Product),
     UpdateLicenses(Vec<License>),
     UpdateRawCartProducts(Vec<CartProduct>),
+    UpdateOrderCartProducts(Vec<CartProduct>),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
@@ -66,6 +67,7 @@ pub struct AppState {
     pub current_product_details: Product,
     pub licenses: Vec<License>,
     pub raw_cart_products: Vec<CartProduct>,
+    pub order_cart_products: Vec<CartProduct>,
 }
 
 impl Reducible for AppState {
@@ -126,6 +128,12 @@ impl Reducible for AppState {
             StateAction::UpdateRawCartProducts(raw_cart_products) => {
                 AppState {
                     raw_cart_products,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateOrderCartProducts(order_cart_products) => {
+                AppState {
+                    order_cart_products,
                     ..self.as_ref().clone()
                 }
             }
