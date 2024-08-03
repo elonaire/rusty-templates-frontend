@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, loading_spinner::LoadingSpinner, card::Card, forms::{input::{InputField, InputFieldType}, select::{SelectInput, SelectOption}}, nav::top_nav::TopNav, wizards::stepper::{Step, Stepper}}, data::{context::{orders::{checkout, get_cart, get_product_external_ids}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::{order::{CartTotals, CheckoutPayload}, user::AuthDetails}}, utils::auth_interceptor::retrieve_new_token, views::landing::{TemplateCardProps, TemplatesListProps}};
+use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, card::Card, forms::{input::{InputField, InputFieldType}, select::{SelectInput, SelectOption}}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav, wizards::stepper::{Step, Stepper}}, data::{context::{orders::{add_to_cart, checkout, get_cart, get_product_external_ids, get_raw_cart_products}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::{order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload}, user::AuthDetails}}, utils::auth_interceptor::retrieve_new_token, views::landing::{TemplateCardProps, TemplatesListProps}};
 use web_sys::window;
 use yew_router::prelude::*;
 
@@ -27,6 +27,8 @@ pub fn CartPage() -> Html {
                 if current_state_clone.cart.id.is_none() {
                     let _cart = get_cart(&current_state_clone).await;
                 }
+
+
                 loading_clone.set(false);
             }); // Await the async block
             || ()
@@ -55,11 +57,16 @@ pub fn CartPage() -> Html {
                 if current_state_clone.cart_products.len() == 0 {
                     let _cart_products = get_products_by_ids(&current_state_clone).await;
                 }
+
+                if current_state_clone.cart.id.is_some() {
+                    log::info!("Enters here");
+                   let _raw_products = get_raw_cart_products(&current_state_clone, current_state_clone.cart.id.clone().unwrap()).await;
+                }
                 loading_clone.set(false);
             });
             || ()
         },
-        (current_state.cart_products.clone(), current_state.cart.clone(), current_state.cart_products_ids.clone()),
+        (current_state.cart_products.clone(), current_state.raw_cart_products.clone(), current_state.cart.clone(), current_state.cart_products_ids.clone()),
     );
 
     let current_state_clone_checkout = current_state.clone();
@@ -101,6 +108,31 @@ pub fn CartPage() -> Html {
                 .expect("Failed to navigate");
         }
     }
+
+    let current_state_clone_remove = current_state.clone();
+    let loading_clone = loading.clone();
+    let on_click_remove_from_cart = {
+        let loading_clone = loading_clone.clone();
+        let current_state_clone_remove = current_state_clone_remove.clone();
+        Callback::from(move |payload: UpdateCartPayload| {
+            let loading_clone = loading_clone.clone();
+            let payload = payload.clone();
+            let current_state_clone_remove = current_state_clone_remove.clone();
+            Callback::from(move |_e: MouseEvent| {
+                loading_clone.set(true);
+
+                let loading_clone = loading_clone.clone();
+                let current_state_clone_remove = current_state_clone_remove.clone();
+                let payload = payload.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+
+                    let _add_to_cart = add_to_cart(&current_state_clone_remove, payload).await;
+                    loading_clone.set(false);
+                });
+            })
+        })
+
+    };
 
     html! {
         <>
@@ -170,15 +202,28 @@ pub fn CartPage() -> Html {
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         {
-                                            current_state.cart_products.iter().map(|product| {
-                                                html! {
-                                                    <tr>
-                                                        <td class="border border-transparent p-2">{format!("{} ", product.name.clone().unwrap())}<span>{"\u{00D7} 1"}</span></td>
-                                                        <td class="border border-transparent p-2">{format!("${}", product.price.clone().unwrap())}</td>
-                                                    </tr>
-                                                }
+                                            current_state.cart_products.iter().filter_map(|cart_product| {
+                                                // log::info!("product: {:?}", product);
+                                                // log::info!("cart_product: {:?}", current_state.raw_cart_products);
+                                                current_state.raw_cart_products.iter().find(|product| {
+                                                    cart_product.id.as_ref().map_or(false, |id| id == &product.ext_product_id)
+                                                }).map(|product| {
+                                                    let payload = UpdateCartPayload {
+                                                        external_product_id: product.ext_product_id.clone(),
+                                                        cart_operation: CartOperation::RemoveProduct,
+                                                        external_license_id: product.license.clone()
+                                                    };
+                                                    html! {
+                                                        <tr>
+                                                            <td class="border border-transparent p-2">{format!("{} ", cart_product.name.clone().unwrap())}<span>{"\u{00D7} 1"}</span></td>
+                                                            <td class="border border-transparent p-2 flex flex-row gap-2 items-center">
+                                                                <span>{format!("${}", cart_product.price.clone().unwrap())}</span><BasicButton onclick={on_click_remove_from_cart.emit(payload)} icon={Some(yew_icons::IconId::BootstrapTrash)} button_text={""} style_ext={"text-red-500"} />
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                })
+
                                             }).collect::<Html>()
                                         }
                                         <tr class="border-t-2 border-secondary">

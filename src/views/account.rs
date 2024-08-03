@@ -1,4 +1,5 @@
 use yew::prelude::*;
+use yew_icons::{Icon, IconId};
 
 use crate::{app::AppStateContext, components::nav::top_nav::TopNav, data::{context::{orders::get_order_cart_products_by_status, products::get_products, users::get_new_token}, models::order::OrderStatus}};
 
@@ -156,8 +157,8 @@ fn Orders() -> Html {
                                 </div>
                                 <div class="">
                                     <h3 class="text-lg font-semibold">{ product.name.clone().unwrap_or_else(|| String::from("Unnamed Product")) }</h3>
-                                    <a href={format!("{}{}", download_file_uri, order.artifact.clone().unwrap_or_else(|| String::from("#")))} class="px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white transition duration-200">
-                                        { "Download" }
+                                    <a href={format!("{}{}", download_file_uri, order.artifact.clone().unwrap_or_else(|| String::from("#")))} class="px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white transition duration-200 flex items-center gap-2">
+                                        <span>{ "Download" }</span><Icon class={"inherit"} width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::LucideDownload}/>
                                     </a>
                                 </div>
                                 <div class="">

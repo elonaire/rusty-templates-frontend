@@ -1,3 +1,5 @@
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 use yew::Properties;
 
@@ -41,16 +43,53 @@ pub enum Framework {
     Thruster,
 }
 
+// Implement the Display trait
+impl fmt::Display for Framework {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Framework::Yew => write!(f, "Yew"),
+            Framework::Dioxus => write!(f, "Dioxus"),
+            Framework::Axum => write!(f, "Axum"),
+            Framework::Rocket => write!(f, "Rocket"),
+            Framework::Iced => write!(f, "Iced"),
+            Framework::Tauri => write!(f, "Tauri"),
+            Framework::Actix => write!(f, "Actix"),
+            Framework::Warp => write!(f, "Warp"),
+            Framework::Rouille => write!(f, "Rouille"),
+            Framework::Thruster => write!(f, "Thruster"),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
 pub enum ApplicationLayer {
     Frontend,
     Backend,
 }
 
+// Implement the Display trait
+impl fmt::Display for ApplicationLayer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ApplicationLayer::Frontend => write!(f, "Frontend"),
+            ApplicationLayer::Backend => write!(f, "Backend"),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
 pub enum UiFramework {
     #[serde(rename = "RustyUI")]
     RustyUI,
+}
+
+// Implement the Display trait
+impl fmt::Display for UiFramework {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            UiFramework::RustyUI => write!(f, "RustyUI"),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
@@ -64,6 +103,20 @@ pub enum UseCase {
     FinanceAdmin,
     #[serde(rename = "IoTAdmin")]
     IoTAdmin,
+}
+
+// Implementing the Display trait
+impl fmt::Display for UseCase {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            UseCase::Dashboard => write!(f, "Dashboard"),
+            UseCase::Ecommerce => write!(f, "E-commerce"),
+            UseCase::Admin => write!(f, "Admin"),
+            UseCase::EcommerceAdmin => write!(f, "E-commerce Admin"),
+            UseCase::FinanceAdmin => write!(f, "Finance Admin"),
+            UseCase::IoTAdmin => write!(f, "IoT Admin"),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

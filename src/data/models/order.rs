@@ -1,3 +1,5 @@
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
@@ -141,4 +143,15 @@ pub enum OrderStatus {
     Failed,
     Refunded,
     OnHold,
+}
+
+// Implement the Display trait
+impl fmt::Display for OrderStatus {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            OrderStatus::Pending => write!(f, "Pending"),
+            OrderStatus::Confirmed => write!(f, "Confirmed"),
+            _ => write!(f, "On Hold"),
+        }
+    }
 }

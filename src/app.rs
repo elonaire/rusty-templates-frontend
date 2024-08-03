@@ -76,14 +76,12 @@ impl Reducible for AppState {
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         let updated_state = match action {
             StateAction::UpdateUserAuthInfo(user) => {
-                log::info!("track here user: {:?}", user);
                 AppState {
                     auth_details: user,
                     ..self.as_ref().clone()
                 }
             },
             StateAction::UpdateProducts(products) => {
-                log::info!("track here products: {:?}", products);
                 AppState {
                     products,
                     ..self.as_ref().clone()

@@ -14,6 +14,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
     let loading = use_state_eq(|| false);
     let navigator = use_navigator().unwrap();
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
 
     let on_license_change = {
         let selected_license = selected_license.clone();
@@ -117,7 +118,10 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 space-x-4">
                         // Screenshot Section
                         <div class="md:col-span-5">
-                        <img src={current_state.current_product_details.screenshot.clone()} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
+                            <img src={format!("{}{}", view_file_uri, current_state.current_product_details.screenshot.clone().unwrap_or("".into()))} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
+                            <p><strong>{"Application Layer: "}</strong>{current_state.current_product_details.application_layer.clone()}</p>
+                            <p><strong>{"Framework: "}</strong>{current_state.current_product_details.framework.clone()}</p>
+                            <p><strong>{"UI Framework: "}</strong>{current_state.current_product_details.ui_framework.clone()}</p>
                         </div>
 
                         // License and Actions Section

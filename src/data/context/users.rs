@@ -53,7 +53,6 @@ pub async fn get_new_token(
                 token: new_token.strip_prefix("Bearer ").unwrap_or("").to_string(),
                 ..state_clone.auth_details.clone()
             };
-            log::info!("{:?}", details);
             state_clone.dispatch(StateAction::UpdateUserAuthInfo(details));
         },
         Err(_e) => {}

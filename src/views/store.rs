@@ -87,10 +87,10 @@ pub fn FilterMenu() -> Html {
                 <div>
                     <SelectInput label={"Select a Category"} options={categories.to_vec()} name={"category"} />
                 </div>
-                <div>
-                    <label class="block text-gray-700">{"Price Range"}</label>
-                    <input type="range" class="block w-full mt-1" min="0" max="1000"/>
-                </div>
+                // <div>
+                //     <label class="block text-gray-700">{"Price Range"}</label>
+                //     <input type="range" class="block w-full mt-1" min="0" max="1000"/>
+                // </div>
                 <div>
                     <SelectInput label={"Select Rating(min)"} options={categories.to_vec()} name={"rating"} />
                 </div>
@@ -122,7 +122,10 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
             <div class="grid grid-cols-1 p-2">
                 <div class="flex flex-row justify-between mb-2 min-h-16">
                     <p class="text-lg font-semibold line-clamp-2">{&props.product.name.clone().unwrap()}</p>
-                    <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
+                    <p class="text-lg font-semibold">{format!("${}", &props.product.price.unwrap())}</p>
+                </div>
+                <div>
+                    <p class="text-gray-700 mb-4 text-sm">{format!("{}", &props.product.use_case.clone().unwrap())}</p>
                 </div>
                 <div class="flex flex-row items-center justify-between gap-2">
                     <BasicButton onclick={onclick_details} button_text={"Details"} style_ext={"px-4 py-2 text-sm border-2 border-primary text-primary hover:bg-primary hover:text-white transition w-full"} />

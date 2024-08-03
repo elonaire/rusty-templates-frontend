@@ -132,7 +132,7 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
                     <h3 class="text-lg font-semibold">{&props.product.name.clone().unwrap()}</h3>
                     <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
                 </div>
-                // <p class="text-gray-700 mb-4 text-sm">{&props.use_case.clone().unwrap()}</p>
+                <p class="text-gray-700 mb-4 text-sm">{format!("{}", &props.product.use_case.clone().unwrap())}</p>
             </div>
         </div>
     }

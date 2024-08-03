@@ -94,5 +94,6 @@ yew_icons = { version = "0.7.3", features = [
     "FontAwesomeSolidUsersGear",
     "BootstrapStoplights",
     "FontAwesomeRegularCompass",
-    "FontAwesomeSolidCircleUser"
+    "FontAwesomeSolidCircleUser",
+    "LucideDownload"
 ] }

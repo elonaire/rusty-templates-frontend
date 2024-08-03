@@ -185,6 +185,8 @@ pub async fn get_raw_cart_products(
                     id
                     license
                     quantity
+                    extProductId
+                    artifact
                 }
             }
         "#;
