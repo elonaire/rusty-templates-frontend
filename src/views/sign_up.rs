@@ -87,7 +87,7 @@ pub fn SignUpPage() -> Html {
 
                             ext_wrapper_styles={"mb-4".to_string()}
                             ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
-                            ext_input_styles={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline".to_string()}
+                            ext_input_styles={"focus:ring-secondary"}
                             autocomplete={"on".to_string()}
                         />
                     </div>
@@ -103,7 +103,7 @@ pub fn SignUpPage() -> Html {
 
                             ext_wrapper_styles={"mb-4".to_string()}
                             ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
-                            ext_input_styles={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline".to_string()}
+                            ext_input_styles={"focus:ring-secondary"}
                             autocomplete={"on".to_string()}
                         />
                     </div>
@@ -119,7 +119,7 @@ pub fn SignUpPage() -> Html {
 
                             ext_wrapper_styles={"mb-4".to_string()}
                             ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
-                            ext_input_styles={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline".to_string()}
+                            ext_input_styles={"focus:ring-secondary"}
                             autocomplete={"on".to_string()}
                         />
                     </div>

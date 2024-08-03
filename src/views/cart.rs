@@ -155,11 +155,11 @@ pub fn CartPage() -> Html {
                                     <Step>
                                         <div class="grid grid-cols-1 gap-4 w-full">
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                                <InputField ext_input_styles={""} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
-                                                <InputField label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
-                                                <InputField required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
+                                                <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
+                                                <InputField ext_input_styles={"focus:ring-secondary"} label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
+                                                <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
                                             </div>
-                                            <InputField required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
+                                            <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
                                         </div>
                                     </Step>
                                     <Step>

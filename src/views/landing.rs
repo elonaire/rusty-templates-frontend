@@ -76,11 +76,29 @@ pub fn Landing() -> Html {
                     <CookieConsent />
                     <Hero />
                     <TemplatesList templates={current_state.products.to_vec()} />
+                    <WhyPurchaseTemplates />
                     <ContactSection />
                 </main>
-                <footer class="bg-gray-800 text-white py-4">
+                <footer class="bg-gray-800 text-white py-10">
+                    <div class="container mx-auto text-center mb-6">
+                        <h2 class="text-lg font-bold mb-4">{"Stay Connected"}</h2>
+                        <div class="flex justify-center space-x-6 mb-6">
+                            <a href="#" class="hover:text-gray-400">{"Facebook"}</a>
+                            <a href="#" class="hover:text-gray-400">{"Twitter"}</a>
+                            <a href="#" class="hover:text-gray-400">{"Instagram"}</a>
+                            <a href="#" class="hover:text-gray-400">{"LinkedIn"}</a>
+                        </div>
+                        <div class="flex justify-center space-x-6 mb-6">
+                            <a href="#" class="hover:text-gray-400">{"Privacy Policy"}</a>
+                            <a href="#" class="hover:text-gray-400">{"Terms of Service"}</a>
+                            <a href="#" class="hover:text-gray-400">{"FAQs"}</a>
+                            <a href="#" class="hover:text-gray-400">{"Contact Us"}</a>
+                        </div>
+                    </div>
                     <div class="container mx-auto text-center">
-                        {format!("© {} Rusty Templates. All rights reserved.", current_year)}
+                        <p class="text-sm">
+                            {format!("© {} Rusty Templates. All rights reserved.", current_year)}
+                        </p>
                     </div>
                 </footer>
             </div>
@@ -179,6 +197,31 @@ pub fn ContactSection() -> Html {
                 // <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition">{"Send"}</button>
                 <BasicButton button_text={"Send"} style_ext={"bg-primary text-white px-4 py-2 text-sm hover:bg-secondary transition"} />
             </form>
+        </section>
+    }
+}
+
+#[function_component]
+pub fn WhyPurchaseTemplates() -> Html {
+    html! {
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">{"Why Purchase Our Templates?"}</h2>
+                <div class="flex justify-around flex-wrap">
+                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Expertise in Rust"}</h3>
+                        <p class="text-gray-600">{"We use Rust, therefore you are sure that we can help whenever you feel stuck."}</p>
+                    </div>
+                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Data-Driven Design"}</h3>
+                        <p class="text-gray-600">{"Our templates are designed with data in mind, therefore you spend less time refactoring, all you need to do is adjust the data models."}</p>
+                    </div>
+                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Free Support & Updates"}</h3>
+                        <p class="text-gray-600">{"We offer free support and updates for up to 1 year."}</p>
+                    </div>
+                </div>
+            </div>
         </section>
     }
 }
