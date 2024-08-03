@@ -8,12 +8,12 @@ module.exports = {
         'jost-sans': ['"Jost"', 'sans-serif'],
       },
       colors: {
-        primary: '#C48D1F',
-        secondary: '#6C96E8',
+        primary: '#8B4A4A',
+        secondary: '#4A8B8B',
         scrollbar: {
           DEFAULT: '#FFFFFF',
           track: '#FFFFFF',
-          thumb: '#C43A1F',
+          thumb: '#8B4A4A',
         },
       },
       height: {

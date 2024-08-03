@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine-perl
+FROM nginx:latest
 ARG DEBIAN_FRONTEND=noninteractive
 
 # # Copy the build artifact from the build stage
@@ -14,4 +14,3 @@ EXPOSE 8080
 
 # # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
-

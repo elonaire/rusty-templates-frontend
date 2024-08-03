@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, card::Card, forms::{input::{InputField, InputFieldType}, select::{SelectInput, SelectOption}}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav, wizards::stepper::{Step, Stepper}}, data::{context::{orders::{add_to_cart, checkout, get_cart, get_product_external_ids, get_raw_cart_products}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::{order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload}, user::AuthDetails}}, utils::auth_interceptor::retrieve_new_token, views::landing::{TemplateCardProps, TemplatesListProps}};
+use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, card::Card, forms::{input::{InputField, InputFieldType}, select::{SelectInput, SelectOption}}, loading_spinner::LoadingSpinner, no_content::NoContent, nav::top_nav::TopNav, wizards::stepper::{Step, Stepper}}, data::{context::{orders::{add_to_cart, checkout, get_cart, get_product_external_ids, get_raw_cart_products, get_licenses}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::{order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload}, user::AuthDetails}}, utils::auth_interceptor::retrieve_new_token, views::landing::{TemplateCardProps, TemplatesListProps}};
 use web_sys::window;
 use yew_router::prelude::*;
 
@@ -26,6 +26,10 @@ pub fn CartPage() -> Html {
 
                 if current_state_clone.cart.id.is_none() {
                     let _cart = get_cart(&current_state_clone).await;
+                }
+
+                if current_state_clone.licenses.is_empty() {
+                   let _licenses = get_licenses(&current_state_clone).await;
                 }
 
 
@@ -204,8 +208,8 @@ pub fn CartPage() -> Html {
                                     <tbody>
                                         {
                                             current_state.cart_products.iter().filter_map(|cart_product| {
-                                                // log::info!("product: {:?}", product);
-                                                // log::info!("cart_product: {:?}", current_state.raw_cart_products);
+                                                log::info!("cart_product: {:?}", cart_product);
+                                                log::info!("cart_product: {:?}", current_state.raw_cart_products);
                                                 current_state.raw_cart_products.iter().find(|product| {
                                                     cart_product.id.as_ref().map_or(false, |id| id == &product.ext_product_id)
                                                 }).map(|product| {
@@ -226,6 +230,13 @@ pub fn CartPage() -> Html {
                                                 })
 
                                             }).collect::<Html>()
+                                        }
+                                        {
+                                            if current_state.cart_products.is_empty() {
+                                                html!{ <tr><td colspan={2} class="flex justify-center"><NoContent /></td></tr> }
+                                            } else {
+                                                html!{}
+                                            }
                                         }
                                         <tr class="border-t-2 border-secondary">
                                             <td class="border border-transparent p-2 pt-6 font-semibold">{"Subtotal"}</td>

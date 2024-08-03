@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_icons::{Icon, IconId};
 
-use crate::{app::AppStateContext, components::nav::top_nav::TopNav, data::{context::{orders::get_order_cart_products_by_status, products::get_products, users::get_new_token}, models::order::OrderStatus}};
+use crate::{app::AppStateContext, components::{nav::top_nav::TopNav, rating::Rating}, data::{context::{orders::get_order_cart_products_by_status, products::get_products, users::get_new_token}, models::order::OrderStatus}};
 
 #[derive(Clone, PartialEq)]
 enum Tab {
@@ -138,7 +138,7 @@ fn Orders() -> Html {
     // }, current_state.clone());
 
     html! {
-        <div class="container mx-auto p-4">
+        <div class="mx-auto p-4">
             <h2 class="text-2xl font-bold mb-4">{ "Your Orders" }</h2>
             <p class="mb-4">{ "Here are your purchased templates." }</p>
             <div class="flex flex-col gap-2">
@@ -149,22 +149,21 @@ fn Orders() -> Html {
                         product.id.as_ref().map_or(false, |id| id == &order.ext_product_id)
                     }).map(|product| {
                         html! {
-                            <div class="flex flex-row border rounded shadow-lg w-full space-x-4">
-                                <div class="w-1/3">
+                            <div class="flex flex-row border rounded shadow-lg space-x-4">
+                                <div class="basis-1/3">
                                     <img src={format!("{}{}", view_file_uri, product.screenshot.clone().unwrap_or_else(|| String::from("fallback_image_url.png")))}
                                          alt={product.name.clone().unwrap_or_else(|| String::from("Unnamed Product"))}
                                          class="w-full h-auto object-cover rounded mb-2" />
                                 </div>
-                                <div class="">
+                                <div class="basis-1/3 flex flex-col gap-2">
                                     <h3 class="text-lg font-semibold">{ product.name.clone().unwrap_or_else(|| String::from("Unnamed Product")) }</h3>
-                                    <a href={format!("{}{}", download_file_uri, order.artifact.clone().unwrap_or_else(|| String::from("#")))} class="px-6 py-1 rounded transition border-2 border-primary text-primary hover:bg-primary hover:text-white transition duration-200 flex items-center gap-2">
-                                        <span>{ "Download" }</span><Icon class={"inherit"} width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::LucideDownload}/>
+                                    <a href={format!("{}{}", download_file_uri, order.artifact.clone().unwrap_or_else(|| String::from("#")))} class="px-6 py-1  rounded border-2 border-primary text-primary hover:bg-primary hover:text-white w-1/2 flex items-center justify-center gap-2">
+                                        <span>{ "Download" }</span><Icon class={""} width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::LucideDownload}/>
                                     </a>
                                 </div>
-                                <div class="">
-                                    <div class="text-yellow-500">
-
-                                    </div>
+                                <div class="basis-1/3 flex flex-col gap-2">
+                                <h3 class="text-lg font-semibold">{ "Submit a Review" }</h3>
+                                <Rating />
                                 </div>
                             </div>
                         }

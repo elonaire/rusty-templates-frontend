@@ -64,9 +64,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
         log::info!("{:?}", props_clone.id);
         loading_clone.set(true);
         wasm_bindgen_futures::spawn_local(async move {
-            if current_state_clone.current_product_details.id.is_none() {
-                let _product_details = get_product_by_slug(&current_state_clone, &props_clone.id).await;
-            }
+            let _product_details = get_product_by_slug(&current_state_clone, &props_clone.id).await;
 
             if current_state_clone.auth_details.token.is_empty() {
                let _new_token = get_new_token(&current_state_clone).await;
@@ -115,10 +113,12 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 space-x-4">
                         // Screenshot Section
                         <div class="md:col-span-5">
-                            <img src={format!("{}{}", view_file_uri, current_state.current_product_details.screenshot.clone().unwrap_or("".into()))} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
-                            <p><strong>{"Application Layer: "}</strong>{current_state.current_product_details.application_layer.clone()}</p>
-                            <p><strong>{"Framework: "}</strong>{current_state.current_product_details.framework.clone()}</p>
-                            <p><strong>{"UI Framework: "}</strong>{current_state.current_product_details.ui_framework.clone()}</p>
+                            <div>
+                                <img src={format!("{}{}", view_file_uri, current_state.current_product_details.screenshot.clone().unwrap_or("".into()))} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
+                                <p><strong>{"Application Layer: "}</strong>{current_state.current_product_details.application_layer.clone()}</p>
+                                <p><strong>{"Framework: "}</strong>{current_state.current_product_details.framework.clone()}</p>
+                                <p><strong>{"UI Framework: "}</strong>{current_state.current_product_details.ui_framework.clone()}</p>
+                            </div>
                         </div>
 
                         // License and Actions Section
