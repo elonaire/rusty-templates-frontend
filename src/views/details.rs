@@ -98,11 +98,8 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
 
             let selected_license_clone = selected_license_clone.clone();
             if current_state_clone_update.current_product_details.id.is_some() && current_state_clone_update.raw_cart_products.len() > 0 {
-                for p in current_state_clone_update.raw_cart_products.iter() {
-                    if p.ext_product_id == current_state_clone_update.current_product_details.id.clone().unwrap() {
-                        selected_license_clone.set(p.license.clone());
-                        break;
-                    }
+                if let Some(matched_product) = current_state_clone_update.raw_cart_products.iter().find(|p| p.ext_product_id == current_state_clone_update.current_product_details.id.clone().unwrap()) {
+                    selected_license_clone.set(matched_product.license.clone());
                 }
             }
             loading_clone.set(false);
