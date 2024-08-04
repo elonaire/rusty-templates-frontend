@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct AuthDetails {
     pub token: String,
     pub user: User,
+    pub url: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default, Eq)]
@@ -76,6 +77,12 @@ pub struct LoginForm {
     pub password: String,
 }
 
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct SignUpForm {
+    pub email: String,
+    pub password: String,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Logins {
     #[serde(skip_serializing_if = "Option::is_none", rename = "userName")]
@@ -90,6 +97,17 @@ pub struct Logins {
 pub struct LoginPayload {
     #[serde(rename = "rawUserDetails")]
     pub raw_user_details: Logins,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SignUpPayload {
+    pub user: SignUpForm
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct SignUpResponse {
+    #[serde(rename = "signUp")]
+    pub sign_up: User,
 }
 
 #[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]

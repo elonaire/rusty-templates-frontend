@@ -2,7 +2,8 @@ use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct InputFieldProps {
-    pub initial_value: Option<String>,
+    #[prop_or("".to_string())]
+    pub initial_value: String,
     #[prop_or("".to_string())]
     pub label: String,
     pub field_type: InputFieldType,
@@ -103,7 +104,7 @@ pub fn InputField(props: &InputFieldProps) -> Html {
             <input
                 class={format!("form-input ring-0 shadow appearance-none border border-slate-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow {}", ext_input_styles)}
                 type={input_field_type_str.to_string()}
-                value={initial_value.clone().unwrap_or("".to_string())}
+                value={initial_value.clone()}
                 name={name.clone()}
                 ref={input_node_ref.clone().unwrap_or(NodeRef::default())}
                 readonly={readonly.clone()}

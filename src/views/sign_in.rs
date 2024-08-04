@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
-use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}}, data::{context::users::sign_in, models::user::{LoginForm, LoginPayload, Logins}}};
+use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}}, data::{context::users::sign_in, models::user::{LoginForm, LoginPayload, Logins, OAuthClientName}}};
+use reqwest::Client;
 use yew::prelude::*;
 use yew_icons::IconId;
 use yew_router::prelude::*;
@@ -38,6 +39,31 @@ pub fn SignInPage() -> Html {
                 navigator_clone.push(&Route::Cart);
             });
 
+        })
+    };
+
+    let _onsocial_sign_in = {
+        let current_state_clone = current_state.clone();
+        Callback::from(move |oauth_client: OAuthClientName| {
+            let current_state_clone = current_state_clone.clone();
+            let oauth_client_clone = oauth_client.clone();
+            Callback::from(move |_e: MouseEvent| {
+                let logins = Logins {
+                    user_name: None,
+                    password: None,
+                    oauth_client: Some(oauth_client_clone)
+                };
+
+                let payload = LoginPayload {
+                    raw_user_details: logins
+                };
+
+                let current_state_clone = current_state_clone.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+
+                    let _sign_in = sign_in(&current_state_clone, payload).await;
+                });
+            })
         })
     };
     // reusing a handler is much cleaner
@@ -86,6 +112,30 @@ pub fn SignInPage() -> Html {
         login_form.clone(),
     );
 
+    let current_state_clone_oauth = current_state.clone();
+    use_effect_with_deps(
+        move |_| {
+            let current_state_clone_oauth = current_state_clone_oauth.clone();
+            let client = Client::builder().build().unwrap();
+
+            wasm_bindgen_futures::spawn_local(async move {
+                if current_state_clone_oauth.auth_details.url.is_some() {
+                    let original_url = current_state_clone_oauth.auth_details.url.clone().unwrap();
+
+                    let response = client
+                        .get(original_url.as_str())
+                        .send()
+                        .await;
+
+                    log::info!("response {:?}", response);
+
+                }
+            });
+            || ()
+        },
+        current_state.clone(),
+    );
+
     html! {
         <div class="min-h-screen font-jost-sans">
             <div class="flex flex-col items-center justify-center p-8 bg-white">
@@ -93,37 +143,31 @@ pub fn SignInPage() -> Html {
                 <img class="w-32 my-4" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
                 </Link<Route>>
                 <h1 class="text-4xl font-bold my-4">{"Log In"}</h1>
-                    <div class="w-full max-w-md flex flex-col items-center gap-2 md:flex-row md:justify-between my-4">
-                    <BasicButton
-                        button_text={"Sign in with Google".to_string()}
-                        style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                        onclick={Callback::from(|_| {
-                            // Handle Google Sign-In
-                            gloo::console::log!("Google Sign-In clicked");
-                        })}
-                        icon={Some(IconId::BootstrapGoogle)} // Assuming you have icons for Google
-                        disabled={false}
-                        button_type={"button".to_string()}
-                        icon_before={true}
-                    />
-                    <BasicButton
-                        button_text={"Sign in with GitHub".to_string()}
-                        style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                        onclick={Callback::from(|_| {
-                            // Handle GitHub Sign-In
-                            gloo::console::log!("GitHub Sign-In clicked");
-                        })}
-                        icon={Some(IconId::BootstrapGithub)} // Assuming you have icons for GitHub
-                        disabled={false}
-                        button_type={"button".to_string()}
-                        icon_before={true}
-                    />
-                </div>
-                <div class="w-full max-w-md flex items-center my-6">
-                    <hr class="flex-grow border-t border-gray-300"/>
-                    <span class="mx-4 text-gray-500">{"OR"}</span>
-                    <hr class="flex-grow border-t border-gray-300"/>
-                </div>
+                    // <div class="w-full max-w-md flex flex-col items-center gap-2 md:flex-row md:justify-between my-4">
+                    // <BasicButton
+                    //     button_text={"Sign in with Google".to_string()}
+                    //     style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
+                    //     onclick={onsocial_sign_in.emit(OAuthClientName::Google)}
+                    //     icon={Some(IconId::BootstrapGoogle)} // Assuming you have icons for Google
+                    //     disabled={false}
+                    //     button_type={"button".to_string()}
+                    //     icon_before={true}
+                    // />
+                    // <BasicButton
+                    //     button_text={"Sign in with GitHub".to_string()}
+                    //     style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
+                    //     onclick={onsocial_sign_in.emit(OAuthClientName::Github)}
+                    //     icon={Some(IconId::BootstrapGithub)} // Assuming you have icons for GitHub
+                    //     disabled={false}
+                    //     button_type={"button".to_string()}
+                    //     icon_before={true}
+                    // />
+                // </div>
+                // <div class="w-full max-w-md flex items-center my-6">
+                //     <hr class="flex-grow border-t border-gray-300"/>
+                //     <span class="mx-4 text-gray-500">{"OR"}</span>
+                //     <hr class="flex-grow border-t border-gray-300"/>
+                // </div>
                 <form {onsubmit} class="w-full max-w-md">
                     <div class="mb-6">
                         <InputField

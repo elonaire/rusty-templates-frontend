@@ -6,9 +6,42 @@ use crate::{
     app::{AppState, StateAction},
     data::{
         graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::user::{AuthDetails, CheckAuthResponse, LoginPayload, LoginResponse},
+        models::user::{AuthDetails, CheckAuthResponse, LoginPayload, LoginResponse, SignUpPayload, SignUpResponse},
     }, utils::auth_interceptor::retrieve_new_token,
 };
+
+pub async fn sign_up(
+    state_clone: &UseReducerHandle<AppState>,
+    payload: SignUpPayload
+) -> Result<(), Error> {
+    let endpoint = option_env!("ACL_SERVICE_URL").expect("ACL_SERVICE_URL env var not set");
+
+    let query = r#"
+            mutation Mutation($user: UserInput!) {
+                signUp(user: $user) {
+                    id
+                }
+            }
+        "#;
+
+    let sign_up_res = perform_mutation_or_query_with_vars::<
+        SignUpResponse,
+        SignUpPayload,
+    >(None, endpoint, query, payload)
+    .await;
+
+    state_clone.dispatch(StateAction::UpdateUserAuthInfo(
+        match sign_up_res.get_data() {
+            Some(data) => AuthDetails {
+                user: data.sign_up.clone(),
+                ..state_clone.auth_details.clone()
+            },
+            None => Default::default(),
+        },
+    ));
+
+    Ok(())
+}
 
 pub async fn sign_in(
     state_clone: &UseReducerHandle<AppState>,
@@ -35,7 +68,8 @@ pub async fn sign_in(
         match sign_in_res.get_data() {
             Some(data) => AuthDetails {
                 user: Default::default(),
-                token: data.sign_in.token.clone().unwrap()
+                token: data.sign_in.token.clone().unwrap_or("".to_string()),
+                url: data.sign_in.url.clone(),
             },
             None => Default::default(),
         },

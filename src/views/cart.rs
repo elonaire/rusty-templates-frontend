@@ -77,7 +77,7 @@ pub fn CartPage() -> Html {
     let navigator_clone = navigator.clone();
     let loading_clone = loading.clone();
     let on_checkout = {
-        Callback::from(move |_| {
+        Callback::from(move |_e: MouseEvent| {
             log::info!("current_state_clone_checkout.auth_details.token: {}", current_state_clone_checkout.auth_details.token);
             if current_state_clone_checkout.auth_details.token.is_empty() {
                 navigator_clone.push(&Route::SignIn);
@@ -143,60 +143,60 @@ pub fn CartPage() -> Html {
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <div class="container mx-auto py-10 px-2">
-                    <div class="grid sm:grid-cols-1 md:grid-cols-8 mt-4 items-center justify-center">
+                    <div class="grid grid-cols-1 md:grid-cols-8 mt-4 items-center justify-center">
                         {
                             if *loading {
                                 html!{ <LoadingSpinner /> }
                             } else { html!{} }
                         }
-                        <div class="md:col-span-5 h-full">
-                            <Card theme={"w-full h-full"}>
-                                <Stepper indicator_no_theme_ext={"bg-primary"} indicator_text_theme_ext={"text-primary"} button_theme_ext={"bg-primary"} on_click_final_button={on_checkout} final_button_text={"Checkout"} steps_titles={vec!["Billing Details".to_string(), "Billing Address".to_string(), "Preview".to_string()]}>
-                                    <Step>
-                                        <div class="grid grid-cols-1 gap-4 w-full">
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                                <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
-                                                <InputField ext_input_styles={"focus:ring-secondary"} label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
-                                                <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
-                                            </div>
-                                            <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
-                                        </div>
-                                    </Step>
-                                    <Step>
-                                        <div class="grid grid-cols-6 gap-2 w-full">
-                                            <div class="col-span-6">
-                                                <InputField required={true} label={"Country"} name={"card_number"} field_type={InputFieldType::Text} />
-                                            </div>
-                                        </div>
-                                    </Step>
-                                    <Step>
-                                        <div>
-                                            <table class="border-collapse w-full">
-                                                <tr>
-                                                    <td class="border border-transparent p-2 font-semibold">{"First Name"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
-                                                    <td class="border border-transparent p-2 font-semibold">{"Middle Name"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border border-transparent p-2 font-semibold">{"Last Name"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.vat)}</td>
-                                                    <td class="border border-transparent p-2 font-semibold">{"Email"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border border-transparent p-2 font-semibold">{"Country"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.total)}</td>
-                                                    <td class="border border-transparent p-2 font-semibold">{"Address"}</td>
-                                                    <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </Step>
-                                </Stepper>
-                            </Card>
-                        </div>
-                        <div class="md:col-span-3">
+                        // <div class="md:col-span-5 h-full">
+                        //     <Card theme={"w-full h-full"}>
+                        //         <Stepper indicator_no_theme_ext={"bg-primary"} indicator_text_theme_ext={"text-primary"} button_theme_ext={"bg-primary"} on_click_final_button={on_checkout} final_button_text={"Checkout"} steps_titles={vec!["Billing Details".to_string(), "Billing Address".to_string(), "Preview".to_string()]}>
+                        //             <Step>
+                        //                 <div class="grid grid-cols-1 gap-4 w-full">
+                        //                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        //                         <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"First Name"} name={"first_name"} field_type={InputFieldType::Text} />
+                        //                         <InputField ext_input_styles={"focus:ring-secondary"} label={"Middle Name"} name={"middle_name"} field_type={InputFieldType::Text} />
+                        //                         <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Last Name"} name={"last_name"} field_type={InputFieldType::Text} />
+                        //                     </div>
+                        //                     <InputField ext_input_styles={"focus:ring-secondary"} required={true} label={"Email"} name={"email"} field_type={InputFieldType::Email} />
+                        //                 </div>
+                        //             </Step>
+                        //             <Step>
+                        //                 <div class="grid grid-cols-6 gap-2 w-full">
+                        //                     <div class="col-span-6">
+                        //                         <InputField required={true} label={"Country"} name={"card_number"} field_type={InputFieldType::Text} />
+                        //                     </div>
+                        //                 </div>
+                        //             </Step>
+                        //             <Step>
+                        //                 <div>
+                        //                     <table class="border-collapse w-full">
+                        //                         <tr>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"First Name"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"Middle Name"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                        //                         </tr>
+                        //                         <tr>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"Last Name"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.vat)}</td>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"Email"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                        //                         </tr>
+                        //                         <tr>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"Country"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.total)}</td>
+                        //                             <td class="border border-transparent p-2 font-semibold">{"Address"}</td>
+                        //                             <td class="border border-transparent p-2">{format!("{}", cart_totals.subtotal)}</td>
+                        //                         </tr>
+                        //                     </table>
+                        //                 </div>
+                        //             </Step>
+                        //         </Stepper>
+                        //     </Card>
+                        // </div>
+                        <div class="md:col-span-8">
                             <div class="grid grid-cols-1 w-full p-2">
                                 <table class="border-collapse w-full">
                                     <thead>
@@ -253,6 +253,7 @@ pub fn CartPage() -> Html {
                                     </tbody>
                                 </table>
                             </div>
+                            <BasicButton onclick={on_checkout} disabled={current_state.cart_products.len() == 0} button_text={"Checkout"} style_ext={"bg-primary text-white px-4 py-2 text-sm hover:bg-secondary transition"} />
                         </div>
                     </div>
                 </div>

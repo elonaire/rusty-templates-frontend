@@ -1,42 +1,92 @@
-use crate::{components::{forms::input::{InputField, InputFieldType}, button::BasicButton}, app::Route};
+use std::ops::Deref;
+
+use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}}, data::{context::users::sign_up, models::user::{SignUpForm, SignUpPayload}}};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_icons::IconId;
 use yew_router::prelude::*;
 
 #[function_component]
 pub fn SignUpPage() -> Html {
-    let email = use_state_eq(|| "".to_string());
-    let password = use_state_eq(|| "".to_string());
-    let username = use_state_eq(|| "".to_string());
+    let signup_form = use_state_eq(|| SignUpForm::default());
+    let signup_form_is_valid = use_state_eq(|| false);
+    let confirm_password = use_state_eq(|| String::new());
+    let navigator = use_navigator().unwrap();
+    let current_state = use_context::<AppStateContext>().unwrap();
 
-    let on_email_input = {
-        let email = email.clone();
-        Callback::from(move |e: InputEvent| {
-            if let Some(input) = e.target_dyn_into::<web_sys::HtmlInputElement>() {
-                email.set(input.value());
+    let onsubmit = {
+        let current_state_clone = current_state.clone();
+        let signup_form = signup_form.clone();
+        let navigator_clone = navigator.clone();
+        Callback::from(move |e: SubmitEvent| {
+            e.prevent_default();
+
+            let logins = SignUpForm {
+                email: signup_form.email.clone(),
+                password: signup_form.password.clone(),
+            };
+
+            let payload = SignUpPayload {
+                user: logins
+            };
+
+            let current_state_clone = current_state_clone.clone();
+            let navigator_clone = navigator_clone.clone();
+            wasm_bindgen_futures::spawn_local(async move {
+
+                let _sign_in = sign_up(&current_state_clone, payload).await;
+                navigator_clone.push(&Route::SignIn);
+            });
+
+        })
+    };
+
+    // reusing a handler is much cleaner
+    let oninput = {
+        let signup_form_clone = signup_form.clone();
+        let confirm_password_clone = confirm_password.clone();
+        Callback::from(move |event: InputEvent| {
+            let target = event.target_dyn_into::<HtmlInputElement>();
+
+            // match your name props for your text fields
+            match target {
+                Some(target) => match target.name().as_str() {
+                    "password" => signup_form_clone.set(SignUpForm {
+                        password: target.value(),
+                        ..signup_form_clone.deref().clone()
+                    }),
+                    "email" => signup_form_clone.set(SignUpForm {
+                        email: target.value(),
+                        ..signup_form_clone.deref().clone()
+                    }),
+                    _ => confirm_password_clone.set(target.value())
+                },
+                None => {
+                    // If its a textarea, the exception will be handled here e.g
+                    // let target = event.target_dyn_into::<HtmlTextAreaElement>();
+                    // match target {
+                    //     Some(target) => match target.name().as_str() {
+                    //         "text_area_name" => {},
+                    //         _ => {}
+                    //     },
+                    //     None => {}
+                    // }
+                }
             }
         })
     };
 
-    let on_password_input = {
-        let password = password.clone();
-        Callback::from(move |e: InputEvent| {
-            if let Some(input) = e.target_dyn_into::<web_sys::HtmlInputElement>() {
-                password.set(input.value());
-            }
-        })
-    };
-
-    let on_username_input = {
-        let username = username.clone();
-        Callback::from(move |e: InputEvent| {
-            if let Some(input) = e.target_dyn_into::<web_sys::HtmlInputElement>() {
-                username.set(input.value());
-            }
-        })
-    };
-
-    let is_valid = !email.clone().is_empty() && !password.clone().is_empty() && !username.clone().is_empty();
+    let signup_form_clone_deps = signup_form.clone();
+    let signup_form_is_valid_clone = signup_form_is_valid.clone();
+    let confirm_password_clone = confirm_password.clone();
+    use_effect_with_deps(
+        move |_| {
+            // set valid to true if none of the fields are empty
+            signup_form_is_valid_clone.set(!signup_form_clone_deps.deref().email.is_empty() && !signup_form_clone_deps.deref().password.is_empty() && (signup_form_clone_deps.deref().password.as_str() == confirm_password_clone.deref()));
+            || ()
+        },
+        (signup_form.clone(), confirm_password.clone()),
+    );
 
     html! {
         <div class="min-h-screen font-jost-sans">
@@ -45,63 +95,47 @@ pub fn SignUpPage() -> Html {
             <img class="w-32 my-4" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
             </Link<Route>>
                 <h1 class="text-4xl font-bold my-4">{"Sign Up"}</h1>
-                <div class="w-full max-w-md flex flex-col items-center gap-2 md:flex-row md:justify-between my-4">
-                    <BasicButton
-                        button_text={"Sign up with Google".to_string()}
-                        style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                        onclick={Callback::from(|_| {
-                            // Handle Google Sign-Up
-                            gloo::console::log!("Google Sign-Up clicked");
-                        })}
-                        icon={Some(IconId::BootstrapGoogle)} // Assuming you have icons for Google
-                        disabled={false}
-                        button_type={"button".to_string()}
-                        icon_before={true}
-                    />
-                    <BasicButton
-                        button_text={"Sign up with GitHub".to_string()}
-                        style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                        onclick={Callback::from(|_| {
-                            // Handle GitHub Sign-Up
-                            gloo::console::log!("GitHub Sign-Up clicked");
-                        })}
-                        icon={Some(IconId::BootstrapGithub)} // Assuming you have icons for GitHub
-                        disabled={false}
-                        button_type={"button".to_string()}
-                        icon_before={true}
-                    />
-                </div>
-                <div class="w-full max-w-md flex items-center my-6">
-                    <hr class="flex-grow border-t border-gray-300"/>
-                    <span class="mx-4 text-gray-500">{"OR"}</span>
-                    <hr class="flex-grow border-t border-gray-300"/>
-                </div>
-                <form class="w-full max-w-md">
+                // <div class="w-full max-w-md flex flex-col items-center gap-2 md:flex-row md:justify-between my-4">
+                //     <BasicButton
+                //         button_text={"Sign up with Google".to_string()}
+                //         style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
+                //         onclick={Callback::from(|_| {
+                //             // Handle Google Sign-Up
+                //             gloo::console::log!("Google Sign-Up clicked");
+                //         })}
+                //         icon={Some(IconId::BootstrapGoogle)} // Assuming you have icons for Google
+                //         disabled={false}
+                //         button_type={"button".to_string()}
+                //         icon_before={true}
+                //     />
+                //     <BasicButton
+                //         button_text={"Sign up with GitHub".to_string()}
+                //         style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
+                //         onclick={Callback::from(|_| {
+                //             // Handle GitHub Sign-Up
+                //             gloo::console::log!("GitHub Sign-Up clicked");
+                //         })}
+                //         icon={Some(IconId::BootstrapGithub)} // Assuming you have icons for GitHub
+                //         disabled={false}
+                //         button_type={"button".to_string()}
+                //         icon_before={true}
+                //     />
+                // </div>
+                // <div class="w-full max-w-md flex items-center my-6">
+                //     <hr class="flex-grow border-t border-gray-300"/>
+                //     <span class="mx-4 text-gray-500">{"OR"}</span>
+                //     <hr class="flex-grow border-t border-gray-300"/>
+                // </div>
+                <form {onsubmit} class="w-full max-w-md">
                     <div class="mb-6">
                         <InputField
-                            initial_value={Some((*username).clone())}
-                            label={"Username".to_string()}
-                            field_type={InputFieldType::Text}
-                            name={"username".to_string()}
-                            required={true}
-                            placeholder={"Enter your username"}
-                            oninput={on_username_input}
-
-                            ext_wrapper_styles={"mb-4".to_string()}
-                            ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
-                            ext_input_styles={"focus:ring-secondary"}
-                            autocomplete={"on".to_string()}
-                        />
-                    </div>
-                    <div class="mb-6">
-                        <InputField
-                            initial_value={Some((*email).clone())}
+                            initial_value={signup_form.email.clone()}
                             label={"Email".to_string()}
                             field_type={InputFieldType::Email}
                             name={"email".to_string()}
                             required={true}
                             placeholder={"Enter your email"}
-                            oninput={on_email_input}
+                            oninput={oninput.clone()}
 
                             ext_wrapper_styles={"mb-4".to_string()}
                             ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
@@ -111,13 +145,29 @@ pub fn SignUpPage() -> Html {
                     </div>
                     <div class="mb-6">
                         <InputField
-                            initial_value={Some((*password).clone())}
+                            initial_value={signup_form.password.clone()}
                             label={"Password".to_string()}
                             field_type={InputFieldType::Password}
                             name={"password".to_string()}
                             required={true}
                             placeholder={"Enter your password"}
-                            oninput={on_password_input}
+                            oninput={oninput.clone()}
+
+                            ext_wrapper_styles={"mb-4".to_string()}
+                            ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
+                            ext_input_styles={"focus:ring-secondary"}
+                            autocomplete={"on".to_string()}
+                        />
+                    </div>
+                    <div class="mb-6">
+                        <InputField
+                            initial_value={(*confirm_password).clone()}
+                            label={"Confirm Password".to_string()}
+                            field_type={InputFieldType::Password}
+                            name={"confirm_password".to_string()}
+                            required={true}
+                            placeholder={"Confirm your password"}
+                            oninput={oninput.clone()}
 
                             ext_wrapper_styles={"mb-4".to_string()}
                             ext_label_styles={"block text-gray-700 text-sm font-bold mb-2".to_string()}
@@ -129,7 +179,7 @@ pub fn SignUpPage() -> Html {
                         button_text={"Sign Up".to_string()}
                         style_ext={"bg-primary text-white px-4 py-2 text-sm hover:bg-secondary transition duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
                         icon={None}
-                        disabled={!is_valid}
+                        disabled={!*signup_form_is_valid}
                         button_type={"submit".to_string()}
                         icon_before={true} // if you have an icon before the button text, set it to true
                     />
