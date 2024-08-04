@@ -1,4 +1,5 @@
 use chrono::Utc;
+use web_sys::window;
 use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
@@ -160,11 +161,28 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
         })
     };
 
+    fn navigate_to_url_in_new_tab(url: &str) {
+        if let Some(win) = window() {
+            // Open the URL in a new tab
+            win.open_with_url_and_target(url, "_blank")
+                .expect("Failed to open new tab");
+        }
+    }
+
+    let on_click_preview = {
+        Callback::from(move |url: String| {
+            Callback::from(move |_| {
+                navigate_to_url_in_new_tab(url.as_str());
+            })
+        })
+    };
+
     html! {
         <div class="rounded">
             <div onmouseover={on_mouse_over} onmouseout={on_mouse_out} class="relative cursor-pointer">
             <img onclick={onclick_details.clone()} src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap())} alt={props.product.name.clone().unwrap()} class="w-full h-auto object-cover mb-2 rounded" />
-                <button class={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)}>{"Live Preview"}</button>
+                // <button class={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)}>{"Live Preview"}</button>
+                <BasicButton disabled={props.product.preview_link.clone().is_none()} onclick={on_click_preview.emit(props.product.preview_link.clone().unwrap_or("".to_string()))} button_text={"Live Preview"} style_ext={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)} />
             </div>
             <div class="p-2">
                 <div class="flex flex-row items-center justify-between mb-2">

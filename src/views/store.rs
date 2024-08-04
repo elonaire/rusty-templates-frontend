@@ -1,3 +1,4 @@
+use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
 use crate::{app::{AppRoute, AppStateContext, Route, StateAction, TemplateRoute}, components::{button::BasicButton, forms::select::{SelectInput, SelectOption}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, get_cart, get_product_external_ids}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::order::{CartOperation, UpdateCartPayload}}, views::landing::{TemplateCardProps, TemplatesListProps}};
@@ -116,6 +117,22 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
         })
     };
 
+    fn navigate_to_url_in_new_tab(url: &str) {
+        if let Some(win) = window() {
+            // Open the URL in a new tab
+            win.open_with_url_and_target(url, "_blank")
+                .expect("Failed to open new tab");
+        }
+    }
+
+    let on_click_preview = {
+        Callback::from(move |url: String| {
+            Callback::from(move |_| {
+                navigate_to_url_in_new_tab(url.as_str());
+            })
+        })
+    };
+
     html! {
         <div class="bg-white shadow-md rounded">
         <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap_or("".into()))} alt={props.product.name.clone()} class="w-full h-auto object-cover rounded-t" />
@@ -129,7 +146,7 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
                 </div>
                 <div class="flex flex-row items-center justify-between gap-2">
                     <BasicButton onclick={onclick_details} button_text={"Details"} style_ext={"px-4 py-2 text-sm border-2 border-primary text-primary hover:bg-primary hover:text-white transition w-full"} />
-                    <BasicButton onclick={Callback::noop()} button_text={"Preview"} style_ext={"px-4 py-2 text-sm border-2 border-secondary text-secondary hover:bg-secondary hover:text-white transition w-full"} />
+                    <BasicButton onclick={on_click_preview.emit(props.product.preview_link.clone().unwrap_or("".to_string()))} button_text={"Preview"} style_ext={"px-4 py-2 text-sm border-2 border-secondary text-secondary hover:bg-secondary hover:text-white transition w-full"} />
                 </div>
             </div>
         </div>

@@ -24,6 +24,7 @@ pub async fn get_products(
                     screenshot
                     useCase
                     slug
+                    previewLink
                 }
             }
         "#;

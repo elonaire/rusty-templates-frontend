@@ -1,3 +1,4 @@
+use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -104,6 +105,22 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
         });
     }, current_state.clone());
 
+    fn navigate_to_url_in_new_tab(url: &str) {
+        if let Some(win) = window() {
+            // Open the URL in a new tab
+            win.open_with_url_and_target(url, "_blank")
+                .expect("Failed to open new tab");
+        }
+    }
+
+    let on_click_preview = {
+        Callback::from(move |url: String| {
+            Callback::from(move |_| {
+                navigate_to_url_in_new_tab(url.as_str());
+            })
+        })
+    };
+
     html! {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
@@ -154,6 +171,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                                 button_text={"Live Preview".to_string()}
                                 style_ext={"bg-secondary text-white px-4 py-2 text-sm hover:bg-secondary transition duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
                                 icon={None}
+                                onclick={on_click_preview.emit(current_state.current_product_details.preview_link.clone().unwrap_or("".to_string()))}
                                 // disabled={!*login_form_is_valid}
                                 // button_type={"submit".to_string()}
                                 icon_before={true} // if you have an icon before the button text, set it to true
