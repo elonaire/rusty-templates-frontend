@@ -87,14 +87,16 @@ pub fn SignInPage() -> Html {
     );
 
     html! {
-        <div class="min-h-screen flex font-jost-sans">
-            <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 bg-white">
-                <img class="my-4 w-32" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="Logo" />
+        <div class="min-h-screen font-jost-sans">
+            <div class="flex flex-col items-center justify-center p-8 bg-white">
+                <Link<Route> to={Route::Landing}>
+                <img class="w-32 my-4" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
+                </Link<Route>>
                 <h1 class="text-4xl font-bold my-4">{"Log In"}</h1>
-                <div class="flex w-full max-w-md justify-between my-4">
+                    <div class="w-full max-w-md flex flex-col items-center gap-2 md:flex-row md:justify-between my-4">
                     <BasicButton
                         button_text={"Sign in with Google".to_string()}
-                        style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full mr-2".to_string()}
+                        style_ext={"bg-red-500 hover:bg-red-400 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
                         onclick={Callback::from(|_| {
                             // Handle Google Sign-In
                             gloo::console::log!("Google Sign-In clicked");
@@ -106,7 +108,7 @@ pub fn SignInPage() -> Html {
                     />
                     <BasicButton
                         button_text={"Sign in with GitHub".to_string()}
-                        style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full ml-2".to_string()}
+                        style_ext={"bg-gray-700 hover:bg-gray-600 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
                         onclick={Callback::from(|_| {
                             // Handle GitHub Sign-In
                             gloo::console::log!("GitHub Sign-In clicked");
@@ -172,13 +174,6 @@ pub fn SignInPage() -> Html {
                         </Link<Route>>
                     </div>
                 </form>
-
-            </div>
-            <div class="w-full md:w-1/2 hidden md:flex items-center justify-center bg-cover bg-center bg-[url('/img/signin_background.svg')]">
-                <div class="text-center p-8">
-                    // <h2 class="text-4xl text-white font-bold mb-4">{ "Nice to see you again" }</h2>
-                    // <p class="text-white text-lg">{ "Welcome back! Please login to your account." }</p>
-                </div>
             </div>
         </div>
     }
