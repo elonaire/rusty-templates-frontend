@@ -3,6 +3,8 @@ use yew::prelude::*;
 use yew::function_component;
 use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
+use crate::app::StateAction;
+use crate::app::TemplateRoute;
 use crate::components::cookie_consent::CookieConsent;
 use crate::data::context::orders::get_cart;
 use crate::data::context::orders::get_product_external_ids;
@@ -72,11 +74,12 @@ pub fn Landing() -> Html {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
-                <main class="container mx-auto py-10">
+                <main class="container mx-auto py-10 px-2">
                     <CookieConsent />
                     <Hero />
                     <TemplatesList templates={current_state.products.to_vec()} />
                     <WhyPurchaseTemplates />
+                    <MissionVision />
                     <ContactSection />
                 </main>
                 <footer class="bg-gray-800 text-white py-10">
@@ -108,20 +111,28 @@ pub fn Landing() -> Html {
 
 #[function_component]
 pub fn Hero() -> Html {
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let file = use_state_eq(|| "b5acd40f-cd8a-4a33-aaa3-299ad632ef83".to_string());
+    let background_image = format!("background-image: url({}{})", view_file_uri, *file);
+
     html! {
-        <section class="text-center py-20 bg-gray-300 rounded">
-            <h1 class="text-5xl font-bold mb-4">{"Do You Really Want to Reinvent?"}</h1>
-            <p class="text-lg mb-8">{"Browse our collection of awesome Rust templates. Web (Frontend and Backend), Mobile & Desktop."}</p>
-            // <a href="#templates" class="bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition">{"Shop Now"}</a>
-            <Link<Route> classes={"bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition"} to={Route::Store}>{"Shop Now"}</Link<Route>>
+        <section class="text-center py-20 bg-gray-300 rounded bg-no-repeat bg-cover bg-center" style={background_image}>
+            <div class="bg-gray-300 py-6 opacity-90 h-full">
+                <h1 class="text-5xl font-bold mb-4">{"Are you looking to start your next project in Rust?"}</h1>
+                <p class="text-lg mb-8">{"Browse our collection of awesome Rust templates. Web (Frontend and Backend), Mobile & Desktop."}</p>
+                // <a href="#templates" class="bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition">{"Shop Now"}</a>
+                <Link<Route> classes={"bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition"} to={Route::Store}>{"Shop Now"}</Link<Route>>
+            </div>
         </section>
     }
 }
 
 #[function_component]
 pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
+    let current_state = use_context::<AppStateContext>().unwrap();
     let is_hovered = use_state(|| false);
     let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let navigator = use_navigator().unwrap();
 
     let on_mouse_over = {
         let is_hovered = is_hovered.clone();
@@ -139,15 +150,25 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
         "hidden"
     };
 
+    let navigator_clone = navigator.clone();
+    let onclick_details = {
+        let current_state_clone = current_state.clone();
+        let product_clone = props.product.clone();
+        Callback::from(move |_| {
+            current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(product_clone.clone()));
+            navigator_clone.push(&TemplateRoute::TemplateDetails { id: product_clone.slug.clone().unwrap() });
+        })
+    };
+
     html! {
         <div class="rounded">
             <div onmouseover={on_mouse_over} onmouseout={on_mouse_out} class="relative cursor-pointer">
-                <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap())} alt={props.product.name.clone().unwrap()} class="w-full h-72 object-cover mb-2 rounded" />
+            <img onclick={onclick_details.clone()} src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap())} alt={props.product.name.clone().unwrap()} class="w-full h-auto object-cover mb-2 rounded" />
                 <button class={format!("absolute bottom-2 right-2 bg-primary text-white text-sm px-4 py-2 rounded hover:bg-secondary transition {}", button_class)}>{"Live Preview"}</button>
             </div>
             <div class="p-2">
                 <div class="flex flex-row items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold">{&props.product.name.clone().unwrap()}</h3>
+                    <h3 onclick={onclick_details.clone()} class="text-lg font-semibold cursor-pointer">{&props.product.name.clone().unwrap()}</h3>
                     <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
                 </div>
                 <p class="text-gray-700 mb-4 text-sm">{format!("{}", &props.product.use_case.clone().unwrap())}</p>
@@ -220,6 +241,28 @@ pub fn WhyPurchaseTemplates() -> Html {
                         <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Free Support & Updates"}</h3>
                         <p class="text-gray-600">{"We offer free support and updates for up to 1 year."}</p>
                     </div>
+                </div>
+            </div>
+        </section>
+    }
+}
+
+#[function_component]
+pub fn MissionVision() -> Html {
+    html! {
+        <section class="py-20 bg-gray-200">
+            <div class="container mx-auto text-center mb-10">
+                <h2 class="text-3xl font-bold mb-6">{"Our Mission and Vision"}</h2>
+                <p class="text-lg text-gray-600">{"Empowering developers to build the future."}</p>
+            </div>
+            <div class="flex flex-col md:flex-row justify-around items-center container mx-auto">
+                <div class="bg-white shadow-lg rounded-lg p-6 m-4 flex-1">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Mission"}</h3>
+                    <p class="text-gray-600">{"Our mission is to promote the development of web applications that are secure, reliable, and capable of delivering exceptional performance."}</p>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg p-6 m-4 flex-1">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Vision"}</h3>
+                    <p class="text-gray-600">{"Our vision is to explore and innovate in areas of the web that have been hindered by the limitations of current programming languages, particularly where performance is a concern."}</p>
                 </div>
             </div>
         </section>

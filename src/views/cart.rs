@@ -142,7 +142,7 @@ pub fn CartPage() -> Html {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
-                <div class="container mx-auto py-10">
+                <div class="container mx-auto py-10 px-2">
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 mt-4 items-center justify-center">
                         {
                             if *loading {

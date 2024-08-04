@@ -24,7 +24,7 @@ pub fn ThankYouPage() -> Html {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
-                <div class="container mx-auto py-10">
+                <div class="container mx-auto py-10 px-2">
                     <div class="bg-white p-6 rounded m-auto shadow-lg w-full max-w-sm text-center">
                         <h1 class="text-2xl font-semibold text-gray-800">{ "Thank You!" }</h1>
                         <p class="mt-4 text-gray-600">{ "Your payment was successful." }</p>

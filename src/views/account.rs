@@ -49,7 +49,7 @@ pub fn AccountPage() -> Html {
     html! {
         <div class="bg-gray-100 min-h-svh font-jost-sans">
             <TopNav />
-            <div class="container min-h-svh bg-gray-100 py-10 mx-auto">
+            <div class="container min-h-svh bg-gray-100 py-10 mx-auto px-2">
                 <div class="mx-auto bg-white shadow-md rounded min-h-72">
                     <div class="flex bg-gray-200 p-4 rounded-t">
                         <TabButton

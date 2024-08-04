@@ -54,7 +54,7 @@ pub fn StorePage() -> Html {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
-                <main class="container mx-auto py-10">
+                <main class="container mx-auto py-10 px-2">
                     <div class="flex">
                         {
                             if *loading {
@@ -62,11 +62,11 @@ pub fn StorePage() -> Html {
                             } else { html!{} }
                         }
                         // Left sidebar for filters
-                        <div class="w-1/4">
+                        <div class="w-1/4 hidden md:block ">
                             <FilterMenu />
                         </div>
                         // Right main content for product listing
-                        <div class="w-3/4 p-4">
+                        <div class="w-4/4 md:w-3/4 p-4">
                         <TemplatesList templates={current_state.products.to_vec()} />
                         </div>
                     </div>
@@ -118,11 +118,11 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
 
     html! {
         <div class="bg-white shadow-md rounded">
-        <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap_or("".into()))} alt={props.product.name.clone()} class="w-full h-auto object-cover mb-4 rounded-t" />
+        <img src={format!("{}{}", view_file_uri, props.product.screenshot.clone().unwrap_or("".into()))} alt={props.product.name.clone()} class="w-full h-auto object-cover rounded-t" />
             <div class="grid grid-cols-1 p-2">
-                <div class="flex flex-row justify-between mb-2 min-h-16">
-                    <p class="text-lg font-semibold line-clamp-2">{&props.product.name.clone().unwrap()}</p>
-                    <p class="text-lg font-semibold">{format!("${}", &props.product.price.unwrap())}</p>
+                <div class="flex flex-row justify-between mb-2 min-h-12">
+                    <p class="text-md font-semibold line-clamp-2">{&props.product.name.clone().unwrap()}</p>
+                    <p class="text-md font-semibold">{format!("${}", &props.product.price.unwrap())}</p>
                 </div>
                 <div>
                     <p class="text-gray-700 mb-4 text-sm">{format!("{}", &props.product.use_case.clone().unwrap())}</p>
