@@ -5,8 +5,8 @@ use yew::UseReducerHandle;
 use crate::{
     app::{AppState, StateAction},
     data::{
-        graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::user::{AuthDetails, CheckAuthResponse, LoginPayload, LoginResponse, SignUpPayload, SignUpResponse},
+        graphql::api_call::perform_mutation_or_query_with_vars,
+        models::user::{AuthDetails, LoginPayload, LoginResponse, SignUpPayload, SignUpResponse},
     }, utils::auth_interceptor::retrieve_new_token,
 };
 

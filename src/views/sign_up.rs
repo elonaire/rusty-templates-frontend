@@ -3,7 +3,6 @@ use std::ops::Deref;
 use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}}, data::{context::users::sign_up, models::user::{SignUpForm, SignUpPayload}}};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew_icons::IconId;
 use yew_router::prelude::*;
 
 #[function_component]

@@ -2,7 +2,7 @@ use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::radio_input::RadioInputField, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, get_cart, get_licenses, get_product_external_ids, get_raw_cart_products}, products::{get_product_by_slug, get_products_by_ids}, users::get_new_token}, models::order::{CartOperation, UpdateCartPayload}}};
+use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::radio_input::RadioInputField, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, get_cart, get_licenses, get_raw_cart_products}, products::get_product_by_slug, users::get_new_token}, models::order::{CartOperation, UpdateCartPayload}}};
 
 #[derive(Clone, PartialEq, Eq, Debug, Properties)]
 pub struct TemplateDetailsProps {

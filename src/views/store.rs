@@ -1,7 +1,7 @@
 use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::{app::{AppRoute, AppStateContext, Route, StateAction, TemplateRoute}, components::{button::BasicButton, forms::select::{SelectInput, SelectOption}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, get_cart, get_product_external_ids}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::order::{CartOperation, UpdateCartPayload}}, views::landing::{TemplateCardProps, TemplatesListProps}};
+use crate::{app::{AppStateContext, StateAction, TemplateRoute}, components::{button::BasicButton, forms::select::{SelectInput, SelectOption}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav}, data::context::{orders::get_cart, products::get_products, users::get_new_token}, views::landing::{TemplateCardProps, TemplatesListProps}};
 
 #[function_component]
 pub fn StorePage() -> Html {
