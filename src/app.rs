@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use yew::prelude::*;
-use crate::{data::models::{order::{Cart, CartProduct, License}, template::Product, user::AuthDetails}, views::{account::AccountPage, cart::CartPage, details::TemplateDetails, landing::Landing, sign_in::SignInPage, sign_up::SignUpPage, store::StorePage, thankyou::ThankYouPage}};
+use crate::{components::hocs::protected_route::ProtectedRoute, data::models::{order::{Cart, CartProduct, License}, template::Product, user::AuthDetails}, views::{account::AccountPage, cart::CartPage, details::TemplateDetails, landing::Landing, sign_in::SignInPage, sign_up::SignUpPage, store::StorePage, thankyou::ThankYouPage}};
 use yew_router::prelude::*;
 
 #[derive(Clone, Routable, PartialEq, Debug)]
@@ -150,7 +150,7 @@ pub fn switch(routes: Route) -> Html {
         Route::Cart => html! { <CartPage /> },
         Route::SignIn => html! { <SignInPage /> },
         Route::SignUp => html! { <SignUpPage /> },
-        Route::Account => html! { <AccountPage /> },
+        Route::Account => html! { <ProtectedRoute component={html! { <AccountPage /> }} /> },
         // Route::TemplateDetails => html! { <TemplateDetails /> },
         Route::TemplateRoot | Route::TemplateSlug => html! { <Switch<TemplateRoute> render={template_switch} /> },
         Route::ThankYou => html! { <ThankYouPage /> },
