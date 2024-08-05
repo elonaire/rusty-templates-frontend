@@ -59,7 +59,7 @@ pub fn BasicModal(props: &ModalProps) -> Html {
                             },
                             UseCase::Success => html!{
                                 <span class="text-green-500 mr-2">
-                                    <Icon icon_id={IconId::BootstrapCheckCircleFill} width={"1.5em".to_owned()} height={"1.5em".to_owned()} />
+                                    <Icon icon_id={IconId::FeatherCheckCircle} width={"1.5em".to_owned()} height={"1.5em".to_owned()} />
                                 </span>
                             },
                             UseCase::Info => html!{
@@ -88,7 +88,7 @@ pub fn BasicModal(props: &ModalProps) -> Html {
                             html!()
                         }
                     }
-                    <button onclick={on_click_primary} class="px-4 py-2 bg-blue-950 text-white rounded">{props.primary_button_text.clone()}</button>
+                    <button onclick={on_click_primary} class="px-4 py-2 bg-primary text-white rounded">{props.primary_button_text.clone()}</button>
                 </div>
             </div>
         </div>

@@ -41,7 +41,7 @@ pub async fn get_products(
                 data.get_products.clone()
             },
             None => {
-
+                // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
                 Default::default()
             },
         },
@@ -80,7 +80,10 @@ pub async fn get_products_by_ids(
     state_clone.dispatch(StateAction::UpdateCartProducts(
         match products.get_data() {
             Some(data) => data.get_products_by_ids.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -124,7 +127,10 @@ pub async fn get_product_by_slug(
     state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
         match product.get_data() {
             Some(data) => data.get_product_by_slug.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(product.get_error()));
+                Default::default()
+            },
         },
     ));
 

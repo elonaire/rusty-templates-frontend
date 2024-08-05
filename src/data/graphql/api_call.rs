@@ -18,6 +18,24 @@ impl<T> GraphQLResponse<T> {
     }
 
     // TODO: Implement get_error
+    pub fn get_error(&self) -> String {
+        match self {
+            GraphQLResponse::Error(error) => self.extract_error_message(error),
+            _ => "".into(),
+        }
+    }
+
+    fn extract_error_message(&self, error_string: &str) -> String {
+        // Look for the position of "Message: "
+        if let Some(start) = error_string.find("Message: ") {
+            // Cut the string to remove everything before "Message: "
+            let message_start = start + "Message: ".len();
+            // Return the substring starting after "Message: "
+            return error_string[message_start..].trim().to_string();
+        }
+        // If "Message: " is not found, return None
+        "Undefined Error".to_string()
+    }
 }
 
 pub async fn perform_query_without_vars<R: for<'de> Deserialize<'de>>(

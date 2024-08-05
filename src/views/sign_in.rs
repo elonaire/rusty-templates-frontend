@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}}, data::{context::users::sign_in, models::user::{LoginForm, LoginPayload, Logins, OAuthClientName}}};
+use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}, loading_spinner::LoadingSpinner}, data::{context::users::sign_in, graphql::api_call::GraphQLResponse, models::user::{AuthDetails, LoginForm, LoginPayload, Logins, OAuthClientName}}};
 use reqwest::Client;
 use yew::prelude::*;
 use yew_icons::IconId;
@@ -13,13 +13,18 @@ pub fn SignInPage() -> Html {
     let login_form = use_state_eq(|| LoginForm::default());
     let login_form_is_valid = use_state_eq(|| false);
     let navigator = use_navigator().unwrap();
+    let error = use_state_eq(|| String::new());
+    let loading = use_state_eq(|| false);
 
     let onsubmit = {
         let current_state_clone = current_state.clone();
         let login_form = login_form.clone();
         let navigator_clone = navigator.clone();
+        let error_clone = error.clone();
+        let loading_clone = loading.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
+            let error_clone = error_clone.clone();
 
             let logins = Logins {
                 user_name: Some(login_form.username.clone()),
@@ -33,10 +38,29 @@ pub fn SignInPage() -> Html {
 
             let current_state_clone = current_state_clone.clone();
             let navigator_clone = navigator_clone.clone();
+            let error_clone = error_clone.clone();
+            let loading_clone = loading_clone.clone();
             wasm_bindgen_futures::spawn_local(async move {
+                loading_clone.set(true);
+                let sign_in_response = sign_in(payload).await;
 
-                let _sign_in = sign_in(&current_state_clone, payload).await;
-                navigator_clone.push(&Route::Cart);
+                match &sign_in_response {
+                    GraphQLResponse::Data(data) => {
+                        current_state_clone.dispatch(StateAction::UpdateUserAuthInfo(
+                            AuthDetails {
+                                token: data.sign_in.token.clone().unwrap(),
+                                ..current_state_clone.auth_details.clone()
+                            }
+                        ));
+
+                        loading_clone.set(false);
+                        navigator_clone.push(&Route::Cart);
+                    },
+                    GraphQLResponse::Error(_e) => {
+                        error_clone.set(sign_in_response.get_error().clone());
+                        loading_clone.set(false);
+                    }
+                }
             });
 
         })
@@ -44,9 +68,11 @@ pub fn SignInPage() -> Html {
 
     let _onsocial_sign_in = {
         let current_state_clone = current_state.clone();
+        let error_clone = error.clone();
         Callback::from(move |oauth_client: OAuthClientName| {
             let current_state_clone = current_state_clone.clone();
             let oauth_client_clone = oauth_client.clone();
+            let error_clone = error_clone.clone();
             Callback::from(move |_e: MouseEvent| {
                 let logins = Logins {
                     user_name: None,
@@ -59,9 +85,24 @@ pub fn SignInPage() -> Html {
                 };
 
                 let current_state_clone = current_state_clone.clone();
+                let error_clone = error_clone.clone();
                 wasm_bindgen_futures::spawn_local(async move {
 
-                    let _sign_in = sign_in(&current_state_clone, payload).await;
+                    let sign_in_response = sign_in(payload).await;
+
+                    match &sign_in_response {
+                        GraphQLResponse::Data(data) => {
+                            current_state_clone.dispatch(StateAction::UpdateUserAuthInfo(
+                                AuthDetails {
+                                    token: data.sign_in.token.clone().unwrap(),
+                                    ..current_state_clone.auth_details.clone()
+                                }
+                            ));
+                        },
+                        GraphQLResponse::Error(_e) => {
+                            error_clone.set(sign_in_response.get_error().clone());
+                        }
+                    }
                 });
             })
         })
@@ -138,6 +179,11 @@ pub fn SignInPage() -> Html {
 
     html! {
         <div class="min-h-screen font-jost-sans">
+            {
+                if *loading {
+                    html!{ <LoadingSpinner /> }
+                } else { html!{} }
+            }
             <div class="flex flex-col items-center justify-center p-8 bg-white">
                 <Link<Route> to={Route::Landing}>
                 <img class="w-32 my-4" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
@@ -200,6 +246,9 @@ pub fn SignInPage() -> Html {
                             ext_input_styles={"focus:ring-secondary"}
                             autocomplete={"on".to_string()}
                         />
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm text-red-500">{ (*error).clone() }</p>
                     </div>
                     <div class="flex items-center justify-between mb-6">
                         <a class="text-sm text-blue-500 hover:text-blue-700" href="#">{ "Forgot Password?" }</a>

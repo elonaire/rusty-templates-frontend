@@ -5,15 +5,14 @@ use yew::UseReducerHandle;
 use crate::{
     app::{AppState, StateAction},
     data::{
-        graphql::api_call::perform_mutation_or_query_with_vars,
+        graphql::api_call::{perform_mutation_or_query_with_vars, GraphQLResponse},
         models::user::{AuthDetails, LoginPayload, LoginResponse, SignUpPayload, SignUpResponse},
     }, utils::auth_interceptor::retrieve_new_token,
 };
 
 pub async fn sign_up(
-    state_clone: &UseReducerHandle<AppState>,
     payload: SignUpPayload
-) -> Result<(), Error> {
+) -> GraphQLResponse<SignUpResponse> {
     let endpoint = option_env!("ACL_SERVICE_URL").expect("ACL_SERVICE_URL env var not set");
 
     let query = r#"
@@ -30,23 +29,27 @@ pub async fn sign_up(
     >(None, endpoint, query, payload)
     .await;
 
-    state_clone.dispatch(StateAction::UpdateUserAuthInfo(
-        match sign_up_res.get_data() {
-            Some(data) => AuthDetails {
-                user: data.sign_up.clone(),
-                ..state_clone.auth_details.clone()
-            },
-            None => Default::default(),
-        },
-    ));
+    sign_up_res
 
-    Ok(())
+    // state_clone.dispatch(StateAction::UpdateUserAuthInfo(
+    //     match sign_up_res.get_data() {
+    //         Some(data) => AuthDetails {
+    //             user: data.sign_up.clone(),
+    //             ..state_clone.auth_details.clone()
+    //         },
+    //         None => {
+    //             state_clone.dispatch(StateAction::UpdateGlobalError(sign_up_res.get_error()));
+    //             Default::default()
+    //         },
+    //     },
+    // ));
+
+    // Ok(())
 }
 
 pub async fn sign_in(
-    state_clone: &UseReducerHandle<AppState>,
     payload: LoginPayload
-) -> Result<(), Error> {
+) -> GraphQLResponse<LoginResponse> {
     let endpoint = option_env!("ACL_SERVICE_URL").expect("ACL_SERVICE_URL env var not set");
 
     let query = r#"
@@ -64,18 +67,23 @@ pub async fn sign_in(
     >(None, endpoint, query, payload)
     .await;
 
-    state_clone.dispatch(StateAction::UpdateUserAuthInfo(
-        match sign_in_res.get_data() {
-            Some(data) => AuthDetails {
-                user: Default::default(),
-                token: data.sign_in.token.clone().unwrap_or("".to_string()),
-                url: data.sign_in.url.clone(),
-            },
-            None => Default::default(),
-        },
-    ));
+    sign_in_res
 
-    Ok(())
+    // state_clone.dispatch(StateAction::UpdateUserAuthInfo(
+    //     match sign_in_res.get_data() {
+    //         Some(data) => AuthDetails {
+    //             user: Default::default(),
+    //             token: data.sign_in.token.clone().unwrap_or("".to_string()),
+    //             url: data.sign_in.url.clone(),
+    //         },
+    //         None => {
+    //             state_clone.dispatch(StateAction::UpdateGlobalError(sign_in_res.get_error()));
+    //             Default::default()
+    //         },
+    //     },
+    // ));
+
+    // Ok(())
 }
 
 pub async fn get_new_token(

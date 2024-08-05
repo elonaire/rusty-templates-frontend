@@ -39,7 +39,10 @@ pub async fn add_to_cart(
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
             Some(data) => data.create_or_update_cart.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(cart.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -70,7 +73,10 @@ pub async fn checkout(
     state_clone.dispatch(StateAction::UpdateCheckoutUrl(
         match payment_url.get_data() {
             Some(data) => data.create_order.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(payment_url.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -102,7 +108,10 @@ pub async fn get_product_external_ids(
     state_clone.dispatch(StateAction::UpdateCartProductsIds(
         match products_ids.get_data() {
             Some(data) => data.get_product_external_ids.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(products_ids.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -135,7 +144,10 @@ pub async fn get_cart(
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
             Some(data) => data.get_cart.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(cart.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -166,7 +178,10 @@ pub async fn get_licenses(
     state_clone.dispatch(StateAction::UpdateLicenses(
         match licenses.get_data() {
             Some(data) => data.get_licenses.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(licenses.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -195,16 +210,19 @@ pub async fn get_raw_cart_products(
         cart_id,
     };
 
-    let licenses = perform_mutation_or_query_with_vars::<
+    let raw_cart_products = perform_mutation_or_query_with_vars::<
         GetRawCartProductsResponse,
         GetRawCartProductsVar
     >(None, endpoint, query, vars)
     .await;
 
     state_clone.dispatch(StateAction::UpdateRawCartProducts(
-        match licenses.get_data() {
+        match raw_cart_products.get_data() {
             Some(data) => data.get_raw_cart_products.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(raw_cart_products.get_error()));
+                Default::default()
+            },
         },
     ));
 
@@ -247,7 +265,10 @@ pub async fn get_order_cart_products_by_status(
     state_clone.dispatch(StateAction::UpdateOrderCartProducts(
         match order_products.get_data() {
             Some(data) => data.get_customer_orders_by_status.clone(),
-            None => Default::default(),
+            None => {
+                // state_clone.dispatch(StateAction::UpdateGlobalError(order_products.get_error()));
+                Default::default()
+            },
         },
     ));
 

@@ -54,6 +54,7 @@ pub enum StateAction {
     UpdateLicenses(Vec<License>),
     UpdateRawCartProducts(Vec<CartProduct>),
     UpdateOrderCartProducts(Vec<CartProduct>),
+    UpdateGlobalError(String),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
@@ -68,6 +69,7 @@ pub struct AppState {
     pub licenses: Vec<License>,
     pub raw_cart_products: Vec<CartProduct>,
     pub order_cart_products: Vec<CartProduct>,
+    pub global_error: String,
 }
 
 impl Reducible for AppState {
@@ -132,6 +134,12 @@ impl Reducible for AppState {
             StateAction::UpdateOrderCartProducts(order_cart_products) => {
                 AppState {
                     order_cart_products,
+                    ..self.as_ref().clone()
+                }
+            },
+            StateAction::UpdateGlobalError(global_error) => {
+                AppState {
+                    global_error,
                     ..self.as_ref().clone()
                 }
             }
