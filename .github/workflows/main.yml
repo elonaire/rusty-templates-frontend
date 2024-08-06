@@ -86,7 +86,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             echo "${{ secrets.DOCKER_PASSWORD }}" | CI=true docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            CI=true docker compose --env-file prod.env -f docker-compose.yml -f docker-compose.acl.yml -f docker-compose.shared.yml up -d --force-recreate
+            CI=true docker compose --env-file prod.env -f docker-compose.yml --compatibility up -d --force-recreate
 
   automerge:
     runs-on: ubuntu-latest
