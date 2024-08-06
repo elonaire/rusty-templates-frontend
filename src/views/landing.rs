@@ -285,7 +285,7 @@ pub fn MissionVision() -> Html {
                         <p class="text-gray-600">{"Our mission is to promote the development of web applications that are secure, reliable, and capable of delivering exceptional performance."}</p>
                     </div>
                     <div class="basis-1/3">
-                        <img src={format!("{}{}", view_file_uri, (*mission_file).clone())} alt="mission" class="w-full h-full object-cover mb-2 rounded" />
+                        <img src={format!("{}{}", view_file_uri, (*mission_file).clone())} alt="mission" class="w-full h-full object-cover mb-2 rounded-r" />
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded m-4 flex-1 flex flex-row">
@@ -294,7 +294,7 @@ pub fn MissionVision() -> Html {
                         <p class="text-gray-600">{"Our vision is to explore and innovate in areas of the web that have been hindered by the limitations of current programming languages, particularly where performance is a concern."}</p>
                     </div>
                     <div class="basis-1/3">
-                        <img src={format!("{}{}", view_file_uri, (*vision_file).clone())} alt="vision" class="w-full h-full object-cover mb-2 rounded" />
+                        <img src={format!("{}{}", view_file_uri, (*vision_file).clone())} alt="vision" class="w-full h-full object-cover mb-2 rounded-r" />
                     </div>
                 </div>
             </div>
