@@ -12,9 +12,89 @@ categories = ["gui", "wasm", "web-programming"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 chrono = "0.4.38"
+gloo = "0.11.0"
+gloo-storage = "0.3.0"
+gql_client = "1.0.7"
+log = "0.4.22"
+reqwest = { version = "0.12.5", features = ["json", "cookies"] }
 serde = "1.0.204"
 tailwind-yew = "0.1.5"
-web-sys = "0.3.69"
+wasm-bindgen-futures = "0.4.42"
+wasm-logger = "0.2.0"
+web-sys = { version = "0.3.69", features = ["HtmlSelectElement", "HtmlDocument"]}
 yew = { version="0.20", features=["csr"] }
 yew-router = "0.17"
-yew_icons = { version = "0.7.3", features = ["BootstrapCart3"] }
+yew_icons = { version = "0.7.3", features = [
+    "BootstrapCart3",
+    "BootstrapFacebook",
+    "BootstrapTwitter",
+    "BootstrapLinkedin",
+    "BootstrapInstagram",
+    "BootstrapXCircle",
+    "BootstrapHeart",
+    "FontAwesomeRegularComments",
+    "BootstrapShare",
+    "BootstrapEye",
+    "BootstrapSearch",
+    "BootstrapHandThumbsUp",
+    "BootstrapDownload",
+    "OcticonsLinkExternal16",
+    "BootstrapGithub",
+    "BootstrapInfoCircleFill",
+    "BootstrapExclamationCircleFill",
+    "BootstrapCheckCircleFill",
+    "BootstrapQuestionCircleFill",
+    "BootstrapCalendarDate",
+    "BootstrapTagsFill",
+    "BootstrapSkipBackward",
+    "HeroiconsOutlineHome",
+    "LucideComponent",
+    "BootstrapChevronDown",
+    "BootstrapChevronUp",
+    "LucideMenu",
+    "FeatherBell",
+    "BootstrapClipboardData",
+    "BootstrapKeyboard",
+    "BootstrapEnvelope",
+    "LucideLayoutDashboard",
+    "FontAwesomeSolidMoneyCheckDollar",
+    "HeroiconsOutlinePresentationChartBar",
+    "LucideWand",
+    "FontAwesomeSolidAtom",
+    "OcticonsSignIn16",
+    "FeatherUserPlus",
+    "BootstrapWallet",
+    "FontAwesomeSolidHandHoldingDollar",
+    "HeroiconsOutlineCurrencyDollar",
+    "LucideTrendingUp",
+    "LucideTrendingDown",
+    "BootstrapInbox",
+    "BootstrapChevronBarLeft",
+    "BootstrapChevronBarRight",
+    "BootstrapChevronLeft",
+    "BootstrapChevronRight",
+    "BootstrapCheck2Circle",
+    "BootstrapPlusLg",
+    "BootstrapDashLg",
+    "BootstrapTrash",
+    "BootstrapPencil",
+    "BootstrapSortDown",
+    "BootstrapSortUp",
+    "BootstrapFilter",
+    "BootstrapCalendarDate",
+    "BootstrapBarChartSteps",
+    "HeroiconsOutlineTableCells",
+    "FontAwesomeSolidMapLocationDot",
+    "BootstrapXLg",
+    "BootstrapSend",
+    "FeatherMoreVertical",
+    "BootstrapMic",
+    "BootstrapGithub",
+    "BootstrapGoogle",
+    "FontAwesomeSolidUsersGear",
+    "BootstrapStoplights",
+    "FontAwesomeRegularCompass",
+    "FontAwesomeSolidCircleUser",
+    "LucideDownload",
+    "FeatherCheckCircle"
+] }
