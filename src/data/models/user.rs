@@ -101,7 +101,7 @@ pub struct LoginPayload {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SignUpPayload {
-    pub user: SignUpForm
+    pub user: SignUpForm,
 }
 
 #[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]

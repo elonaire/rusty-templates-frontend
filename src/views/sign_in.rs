@@ -1,11 +1,23 @@
 use std::ops::Deref;
 
-use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}, loading_spinner::LoadingSpinner}, data::{context::users::sign_in, graphql::api_call::GraphQLResponse, models::user::{AuthDetails, LoginForm, LoginPayload, Logins, OAuthClientName}}};
+use crate::{
+    app::{AppStateContext, Route, StateAction},
+    components::{
+        button::BasicButton,
+        forms::input::{InputField, InputFieldType},
+        loading_spinner::LoadingSpinner,
+    },
+    data::{
+        context::users::sign_in,
+        graphql::api_call::GraphQLResponse,
+        models::user::{AuthDetails, LoginForm, LoginPayload, Logins, OAuthClientName},
+    },
+};
 use reqwest::Client;
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_icons::IconId;
 use yew_router::prelude::*;
-use web_sys::HtmlInputElement;
 
 #[function_component]
 pub fn SignInPage() -> Html {
@@ -29,11 +41,11 @@ pub fn SignInPage() -> Html {
             let logins = Logins {
                 user_name: Some(login_form.username.clone()),
                 password: Some(login_form.password.clone()),
-                oauth_client: None
+                oauth_client: None,
             };
 
             let payload = LoginPayload {
-                raw_user_details: logins
+                raw_user_details: logins,
             };
 
             let current_state_clone = current_state_clone.clone();
@@ -50,19 +62,18 @@ pub fn SignInPage() -> Html {
                             AuthDetails {
                                 token: data.sign_in.token.clone().unwrap(),
                                 ..current_state_clone.auth_details.clone()
-                            }
+                            },
                         ));
 
                         loading_clone.set(false);
                         navigator_clone.push(&Route::Cart);
-                    },
+                    }
                     GraphQLResponse::Error(_e) => {
                         error_clone.set(sign_in_response.get_error().clone());
                         loading_clone.set(false);
                     }
                 }
             });
-
         })
     };
 
@@ -77,17 +88,16 @@ pub fn SignInPage() -> Html {
                 let logins = Logins {
                     user_name: None,
                     password: None,
-                    oauth_client: Some(oauth_client_clone)
+                    oauth_client: Some(oauth_client_clone),
                 };
 
                 let payload = LoginPayload {
-                    raw_user_details: logins
+                    raw_user_details: logins,
                 };
 
                 let current_state_clone = current_state_clone.clone();
                 let error_clone = error_clone.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-
                     let sign_in_response = sign_in(payload).await;
 
                     match &sign_in_response {
@@ -96,9 +106,9 @@ pub fn SignInPage() -> Html {
                                 AuthDetails {
                                     token: data.sign_in.token.clone().unwrap(),
                                     ..current_state_clone.auth_details.clone()
-                                }
+                                },
                             ));
-                        },
+                        }
                         GraphQLResponse::Error(_e) => {
                             error_clone.set(sign_in_response.get_error().clone());
                         }
@@ -147,7 +157,10 @@ pub fn SignInPage() -> Html {
     use_effect_with_deps(
         move |_| {
             // set valid to true if none of the fields are empty
-            login_form_is_valid_clone.set(!login_form_clone_deps.deref().username.is_empty() && !login_form_clone_deps.deref().password.is_empty());
+            login_form_is_valid_clone.set(
+                !login_form_clone_deps.deref().username.is_empty()
+                    && !login_form_clone_deps.deref().password.is_empty(),
+            );
             || ()
         },
         login_form.clone(),
@@ -163,11 +176,7 @@ pub fn SignInPage() -> Html {
                 if current_state_clone_oauth.auth_details.url.is_some() {
                     let original_url = current_state_clone_oauth.auth_details.url.clone().unwrap();
 
-                    let response = client
-                        .get(original_url.as_str())
-                        .send()
-                        .await;
-
+                    let response = client.get(original_url.as_str()).send().await;
                 }
             });
             || ()
