@@ -1,6 +1,22 @@
 use std::ops::Deref;
 
-use crate::{app::{AppStateContext, Route, StateAction}, components::{button::BasicButton, forms::input::{InputField, InputFieldType}, loading_spinner::LoadingSpinner, modal::basic_modal::{BasicModal, UseCase}}, data::{context::users::sign_up, graphql::api_call::GraphQLResponse, models::{general::ModalConfigs, user::{AuthDetails, SignUpForm, SignUpPayload}}}};
+use crate::{
+    app::{AppStateContext, Route, StateAction},
+    components::{
+        button::BasicButton,
+        forms::input::{InputField, InputFieldType},
+        loading_spinner::LoadingSpinner,
+        modal::basic_modal::{BasicModal, UseCase},
+    },
+    data::{
+        context::users::sign_up,
+        graphql::api_call::GraphQLResponse,
+        models::{
+            general::ModalConfigs,
+            user::{AuthDetails, SignUpForm, SignUpPayload},
+        },
+    },
+};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -11,15 +27,15 @@ pub fn SignUpPage() -> Html {
     let signup_form_is_valid = use_state_eq(|| false);
     let confirm_password = use_state_eq(|| String::new());
     let navigator = use_navigator().unwrap();
-    let current_state = use_context::<AppStateContext>().unwrap();
+    // let current_state = use_context::<AppStateContext>().unwrap();
     let error = use_state_eq(|| String::new());
     let modal_configs = use_state_eq(|| ModalConfigs::default());
     let loading = use_state_eq(|| false);
 
     let onsubmit = {
-        let current_state_clone = current_state.clone();
-        let signup_form = signup_form.clone();
-        let navigator_clone = navigator.clone();
+        // let current_state_clone = current_state.clone();
+        let signup_form_clone = signup_form.clone();
+        // let navigator_clone = navigator.clone();
         let error_clone = error.clone();
         let modal_configs_clone = modal_configs.clone();
         let loading_clone = loading.clone();
@@ -27,44 +43,49 @@ pub fn SignUpPage() -> Html {
             e.prevent_default();
 
             let logins = SignUpForm {
-                email: signup_form.email.clone(),
-                password: signup_form.password.clone(),
+                email: signup_form_clone.email.clone(),
+                password: signup_form_clone.password.clone(),
             };
 
-            let payload = SignUpPayload {
-                user: logins
-            };
+            let payload = SignUpPayload { user: logins };
 
             // let current_state_clone = current_state_clone.clone();
-            let navigator_clone = navigator_clone.clone();
+            // let navigator_clone = navigator_clone.clone();
             let error_clone = error_clone.clone();
             let modal_configs_clone = modal_configs_clone.clone();
             let loading_clone = loading_clone.clone();
+            let signup_form_clone = signup_form_clone.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 loading_clone.set(true);
                 let sign_up_response = sign_up(payload).await;
 
                 match &sign_up_response {
-                    GraphQLResponse::Data(data) => {
+                    GraphQLResponse::Data(_data) => {
                         let modal_info = ModalConfigs {
                             use_case: UseCase::Success,
                             title: "Successfully Registered!".to_string(),
                             is_open: true,
-                            message: "You have been successfully registered, you can proceed to login".to_string(),
+                            message:
+                                "You have been successfully registered, you can proceed to login"
+                                    .to_string(),
                         };
 
                         modal_configs_clone.set(modal_info);
 
                         loading_clone.set(false);
+                        signup_form_clone.set(SignUpForm::default());
+                        error_clone.set(String::new());
                         // navigator_clone.push(&Route::Cart);
-                        navigator_clone.push(&Route::SignIn);
-                    },
+                        // navigator_clone.push(&Route::SignIn);
+                    }
                     GraphQLResponse::Error(_e) => {
                         let modal_info = ModalConfigs {
                             use_case: UseCase::Error,
                             title: "Registration Failed!".to_string(),
                             is_open: true,
-                            message: "Registration Failed. Please check your details and try again.".to_string(),
+                            message:
+                                "Registration Failed. Please check your details and try again."
+                                    .to_string(),
                         };
 
                         modal_configs_clone.set(modal_info);
@@ -73,7 +94,6 @@ pub fn SignUpPage() -> Html {
                     }
                 }
             });
-
         })
     };
 
@@ -95,7 +115,7 @@ pub fn SignUpPage() -> Html {
                         email: target.value(),
                         ..signup_form_clone.deref().clone()
                     }),
-                    _ => confirm_password_clone.set(target.value())
+                    _ => confirm_password_clone.set(target.value()),
                 },
                 None => {
                     // If its a textarea, the exception will be handled here e.g
@@ -119,7 +139,12 @@ pub fn SignUpPage() -> Html {
         use_effect_with_deps(
             move |_| {
                 // set valid to true if none of the fields are empty
-                signup_form_is_valid_clone.set(!signup_form_clone_deps.deref().email.is_empty() && !signup_form_clone_deps.deref().password.is_empty() && (signup_form_clone_deps.deref().password.as_str() == confirm_password_clone.deref()));
+                signup_form_is_valid_clone.set(
+                    !signup_form_clone_deps.deref().email.is_empty()
+                        && !signup_form_clone_deps.deref().password.is_empty()
+                        && (signup_form_clone_deps.deref().password.as_str()
+                            == confirm_password_clone.deref()),
+                );
                 || ()
             },
             (signup_form.clone(), confirm_password.clone()),
@@ -128,6 +153,8 @@ pub fn SignUpPage() -> Html {
 
     let on_click_primary_modal = {
         let modal_configs_clone = modal_configs.clone();
+        let navigator_clone = navigator.clone();
+        let error_clone = error.clone();
         Callback::from(move |_| {
             let update_modal = ModalConfigs {
                 is_open: false,
@@ -135,6 +162,10 @@ pub fn SignUpPage() -> Html {
             };
 
             modal_configs_clone.set(update_modal);
+
+            if (*error_clone).clone().is_empty() {
+                navigator_clone.push(&Route::SignIn);
+            }
         })
     };
 
