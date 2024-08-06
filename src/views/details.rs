@@ -4,7 +4,10 @@ use yew_router::prelude::*;
 
 use crate::{
     app::{AppStateContext, Route},
-    components::{button::BasicButton, forms::radio_input::RadioInputField, nav::top_nav::TopNav},
+    components::{
+        button::BasicButton, forms::radio_input::RadioInputField, loading_spinner::LoadingSpinner,
+        nav::top_nav::TopNav,
+    },
     data::{
         context::{
             orders::{add_to_cart, get_cart, get_licenses, get_raw_cart_products},
@@ -168,6 +171,11 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
             <div class="bg-gray-100 min-h-svh font-jost-sans">
                 <TopNav />
                 <div class="container mx-auto py-10 px-2">
+                    {
+                        if *loading {
+                            html!{ <LoadingSpinner /> }
+                        } else { html!{} }
+                    }
                     <h1 class="text-2xl font-bold my-2">{current_state.current_product_details.name.clone()}</h1>
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 gap-4">
                         // Screenshot Section
