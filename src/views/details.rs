@@ -2,7 +2,18 @@ use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, forms::radio_input::RadioInputField, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, get_cart, get_licenses, get_raw_cart_products}, products::get_product_by_slug, users::get_new_token}, models::order::{CartOperation, UpdateCartPayload}}};
+use crate::{
+    app::{AppStateContext, Route},
+    components::{button::BasicButton, forms::radio_input::RadioInputField, nav::top_nav::TopNav},
+    data::{
+        context::{
+            orders::{add_to_cart, get_cart, get_licenses, get_raw_cart_products},
+            products::get_product_by_slug,
+            users::get_new_token,
+        },
+        models::order::{CartOperation, UpdateCartPayload},
+    },
+};
 
 #[derive(Clone, PartialEq, Eq, Debug, Properties)]
 pub struct TemplateDetailsProps {
@@ -15,7 +26,8 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
     let loading = use_state_eq(|| false);
     let navigator = use_navigator().unwrap();
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
 
     let on_license_change = {
         let selected_license = selected_license.clone();
@@ -27,9 +39,13 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
             selected_license.set(value_clone.clone());
             wasm_bindgen_futures::spawn_local(async move {
                 let payload = UpdateCartPayload {
-                    external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
+                    external_product_id: current_state_clone
+                        .current_product_details
+                        .id
+                        .clone()
+                        .unwrap(),
                     cart_operation: CartOperation::AddProduct,
-                    external_license_id: value_clone.clone()
+                    external_license_id: value_clone.clone(),
                 };
                 let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
                 // navigator_clone.push(&Route::Cart);
@@ -38,70 +54,98 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     };
 
     let onclick_buy = {
-        let current_state_clone = current_state.clone();
-        let selected_license_clone = selected_license.clone();
+        // let current_state_clone = current_state.clone();
+        // let selected_license_clone = selected_license.clone();
+        let navigator_clone = navigator.clone();
         Callback::from(move |_e: MouseEvent| {
             // current_state_clone.dispatch(StateAction::UpdateCart(product_clone.clone()));
-            let current_state_clone = current_state_clone.clone();
-            let navigator_clone = navigator.clone();
-            let selected_license_val = (*selected_license_clone).clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let payload = UpdateCartPayload {
-                    external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
-                    cart_operation: CartOperation::AddProduct,
-                    external_license_id: selected_license_val
-                };
-                let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
-                navigator_clone.push(&Route::Cart);
-            });
+            // let current_state_clone = current_state_clone.clone();
+            let navigator_clone = navigator_clone.clone();
+            // let selected_license_val = (*selected_license_clone).clone();
+            navigator_clone.push(&Route::Cart);
+            // wasm_bindgen_futures::spawn_local(async move {
+            //     let payload = UpdateCartPayload {
+            //         external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
+            //         cart_operation: CartOperation::AddProduct,
+            //         external_license_id: selected_license_val
+            //     };
+            //     let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
+
+            // });
         })
     };
 
     let current_state_clone = current_state.clone();
     let loading_clone = loading.clone();
     let props_clone = props.clone();
-    use_effect_with_deps(move |_| {
-        loading_clone.set(true);
-        wasm_bindgen_futures::spawn_local(async move {
-            let _product_details = get_product_by_slug(&current_state_clone, &props_clone.id).await;
+    use_effect_with_deps(
+        move |_| {
+            loading_clone.set(true);
+            wasm_bindgen_futures::spawn_local(async move {
+                let _product_details =
+                    get_product_by_slug(&current_state_clone, &props_clone.id).await;
 
-            if current_state_clone.auth_details.token.is_empty() {
-               let _new_token = get_new_token(&current_state_clone).await;
-            }
+                if current_state_clone.auth_details.token.is_empty() {
+                    let _new_token = get_new_token(&current_state_clone).await;
+                }
 
-            if current_state_clone.licenses.is_empty() {
-               let _licenses = get_licenses(&current_state_clone).await;
-            }
+                if current_state_clone.licenses.is_empty() {
+                    let _licenses = get_licenses(&current_state_clone).await;
+                }
 
-            if current_state_clone.cart.id.is_none() {
-                let _cart = get_cart(&current_state_clone).await;
-            }
+                if current_state_clone.cart.id.is_none() {
+                    let _cart = get_cart(&current_state_clone).await;
+                }
 
-            if current_state_clone.cart.id.is_some() {
-               let _raw_products = get_raw_cart_products(&current_state_clone, current_state_clone.cart.id.clone().unwrap()).await;
-            }
+                if current_state_clone.cart.id.is_some() {
+                    let _raw_products = get_raw_cart_products(
+                        &current_state_clone,
+                        current_state_clone.cart.id.clone().unwrap(),
+                    )
+                    .await;
+                }
 
-            loading_clone.set(false);
-        });
-    }, ());
+                loading_clone.set(false);
+            });
+        },
+        (),
+    );
 
     let current_state_clone_update = current_state.clone();
     let loading_clone = loading.clone();
     let selected_license_clone = selected_license.clone();
-    use_effect_with_deps(move |_| {
-        wasm_bindgen_futures::spawn_local(async move {
-            loading_clone.set(true);
+    use_effect_with_deps(
+        move |_| {
+            wasm_bindgen_futures::spawn_local(async move {
+                loading_clone.set(true);
 
-
-            let selected_license_clone = selected_license_clone.clone();
-            if current_state_clone_update.current_product_details.id.is_some() && current_state_clone_update.raw_cart_products.len() > 0 {
-                if let Some(matched_product) = current_state_clone_update.raw_cart_products.iter().find(|p| p.ext_product_id == current_state_clone_update.current_product_details.id.clone().unwrap()) {
-                    selected_license_clone.set(matched_product.license.clone());
+                let selected_license_clone = selected_license_clone.clone();
+                if current_state_clone_update
+                    .current_product_details
+                    .id
+                    .is_some()
+                    && current_state_clone_update.raw_cart_products.len() > 0
+                {
+                    if let Some(matched_product) = current_state_clone_update
+                        .raw_cart_products
+                        .iter()
+                        .find(|p| {
+                            p.ext_product_id
+                                == current_state_clone_update
+                                    .current_product_details
+                                    .id
+                                    .clone()
+                                    .unwrap()
+                        })
+                    {
+                        selected_license_clone.set(matched_product.license.clone());
+                    }
                 }
-            }
-            loading_clone.set(false);
-        });
-    }, current_state.clone());
+                loading_clone.set(false);
+            });
+        },
+        current_state.clone(),
+    );
 
     fn navigate_to_url_in_new_tab(url: &str) {
         if let Some(win) = window() {
