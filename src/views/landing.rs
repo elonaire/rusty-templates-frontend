@@ -110,8 +110,8 @@ pub fn Landing() -> Html {
 
 #[function_component]
 pub fn Hero() -> Html {
-    let view_file_uri =
-        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
+        .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
     let file = use_state_eq(|| "3554da02-b924-4af7-b366-aaebf0212f7a".to_string());
     let background_image = format!("background-image: url({}{})", view_file_uri, *file);
 
@@ -246,15 +246,15 @@ pub fn WhyPurchaseTemplates() -> Html {
             <div class="container mx-auto text-center">
                 <h2 class="text-3xl font-bold text-gray-800 mb-8">{"Why Purchase Our Templates?"}</h2>
                 <div class="flex justify-around flex-wrap">
-                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                    <div class="max-w-xs bg-white border rounded shadow-md p-6 m-4">
                         <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Expertise in Rust"}</h3>
                         <p class="text-gray-600">{"We use Rust, therefore you are sure that we can help whenever you feel stuck."}</p>
                     </div>
-                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                    <div class="max-w-xs bg-white border rounded shadow-md p-6 m-4">
                         <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Data-Driven Design"}</h3>
                         <p class="text-gray-600">{"Our templates are designed with data in mind, therefore you spend less time refactoring, all you need to do is adjust the data models."}</p>
                     </div>
-                    <div class="max-w-xs bg-white border rounded-lg shadow-md p-6 m-4">
+                    <div class="max-w-xs bg-white border rounded shadow-md p-6 m-4">
                         <h3 class="text-xl font-semibold text-gray-700 mb-4">{"Free Support & Updates"}</h3>
                         <p class="text-gray-600">{"We offer free support and updates for up to 1 year."}</p>
                     </div>
@@ -266,20 +266,36 @@ pub fn WhyPurchaseTemplates() -> Html {
 
 #[function_component]
 pub fn MissionVision() -> Html {
+    let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
+        .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
+    let mission_file = use_state_eq(|| "983c60f4-7841-4cf1-8a9e-f887fe9ca785".to_string());
+    let vision_file = use_state_eq(|| "a43a36fc-8363-4925-87fe-1e22d5011c97".to_string());
+
     html! {
         <section class="py-20 bg-gray-200">
             <div class="container mx-auto text-center mb-10">
                 <h2 class="text-3xl font-bold mb-6">{"Our Mission and Vision"}</h2>
                 <p class="text-lg text-gray-600">{"Empowering developers to build the future."}</p>
             </div>
-            <div class="flex flex-col md:flex-row justify-around items-center container mx-auto">
-                <div class="bg-white shadow-lg rounded-lg p-6 m-4 flex-1">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Mission"}</h3>
-                    <p class="text-gray-600">{"Our mission is to promote the development of web applications that are secure, reliable, and capable of delivering exceptional performance."}</p>
+            // I want the divs in the div below to always have the same height
+            <div class="flex flex-col md:flex-row justify-around container mx-auto">
+                <div class="bg-white shadow-lg rounded m-4 flex-1 flex flex-row">
+                    <div class="p-6 basis-2/3">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Mission"}</h3>
+                        <p class="text-gray-600">{"Our mission is to promote the development of web applications that are secure, reliable, and capable of delivering exceptional performance."}</p>
+                    </div>
+                    <div class="basis-1/3">
+                        <img src={format!("{}{}", view_file_uri, (*mission_file).clone())} alt="mission" class="w-full h-full object-cover mb-2 rounded-r" />
+                    </div>
                 </div>
-                <div class="bg-white shadow-lg rounded-lg p-6 m-4 flex-1">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Vision"}</h3>
-                    <p class="text-gray-600">{"Our vision is to explore and innovate in areas of the web that have been hindered by the limitations of current programming languages, particularly where performance is a concern."}</p>
+                <div class="bg-white shadow-lg rounded m-4 flex-1 flex flex-row">
+                    <div class="p-6 basis-2/3">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">{"Our Vision"}</h3>
+                        <p class="text-gray-600">{"Our vision is to explore and innovate in areas of the web that have been hindered by the limitations of current programming languages, particularly where performance is a concern."}</p>
+                    </div>
+                    <div class="basis-1/3">
+                        <img src={format!("{}{}", view_file_uri, (*vision_file).clone())} alt="vision" class="w-full h-full object-cover mb-2 rounded-r" />
+                    </div>
                 </div>
             </div>
         </section>
