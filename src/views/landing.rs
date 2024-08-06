@@ -1,8 +1,3 @@
-use chrono::Utc;
-use web_sys::window;
-use yew::prelude::*;
-use yew::function_component;
-use yew_router::prelude::*;
 use crate::app::StateAction;
 use crate::app::TemplateRoute;
 use crate::components::cookie_consent::CookieConsent;
@@ -10,13 +5,21 @@ use crate::data::context::orders::get_cart;
 use crate::data::context::products::get_products;
 use crate::data::context::users::get_new_token;
 use crate::data::models::template::Product;
-use crate::{app::{Route, AppStateContext}, components::{nav::top_nav::TopNav, button::BasicButton}};
+use crate::{
+    app::{AppStateContext, Route},
+    components::{button::BasicButton, nav::top_nav::TopNav},
+};
+use chrono::Utc;
+use web_sys::window;
+use yew::function_component;
+use yew::prelude::*;
+use yew_router::prelude::*;
 
 #[derive(Debug, Properties, Clone, PartialEq)]
 pub struct TemplateCardProps {
-   pub product: Product,
-   // #[prop_or(Callback::noop())]
-   // pub onclick_buy: Callback<MouseEvent>,
+    pub product: Product,
+    // #[prop_or(Callback::noop())]
+    // pub onclick_buy: Callback<MouseEvent>,
 }
 
 #[function_component]
@@ -34,7 +37,6 @@ pub fn Landing() -> Html {
     use_effect_with_deps(
         move |_| {
             wasm_bindgen_futures::spawn_local(async move {
-
                 if current_state_clone.products.is_empty() {
                     let _products = get_products(&current_state_clone).await;
                 }
@@ -44,9 +46,8 @@ pub fn Landing() -> Html {
                 }
 
                 if current_state_clone.auth_details.token.is_empty() {
-                   let _new_token = get_new_token(&current_state_clone).await;
+                    let _new_token = get_new_token(&current_state_clone).await;
                 }
-
             }); // Await the async block
             || ()
         },
@@ -109,8 +110,9 @@ pub fn Landing() -> Html {
 
 #[function_component]
 pub fn Hero() -> Html {
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
-    let file = use_state_eq(|| "b5acd40f-cd8a-4a33-aaa3-299ad632ef83".to_string());
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let file = use_state_eq(|| "3554da02-b924-4af7-b366-aaebf0212f7a".to_string());
     let background_image = format!("background-image: url({}{})", view_file_uri, *file);
 
     html! {
@@ -129,7 +131,8 @@ pub fn Hero() -> Html {
 pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
     let is_hovered = use_state(|| false);
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
     let navigator = use_navigator().unwrap();
 
     let on_mouse_over = {
@@ -142,19 +145,19 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
         Callback::from(move |_| is_hovered.set(false))
     };
 
-    let button_class = if *is_hovered {
-        ""
-    } else {
-        "hidden"
-    };
+    let button_class = if *is_hovered { "" } else { "hidden" };
 
     let navigator_clone = navigator.clone();
     let onclick_details = {
         let current_state_clone = current_state.clone();
         let product_clone = props.product.clone();
         Callback::from(move |_| {
-            current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(product_clone.clone()));
-            navigator_clone.push(&TemplateRoute::TemplateDetails { id: product_clone.slug.clone().unwrap() });
+            current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+                product_clone.clone(),
+            ));
+            navigator_clone.push(&TemplateRoute::TemplateDetails {
+                id: product_clone.slug.clone().unwrap(),
+            });
         })
     };
 
@@ -199,7 +202,6 @@ pub struct TemplatesListProps {
 
 #[function_component]
 pub fn TemplatesList(TemplatesListProps { templates }: &TemplatesListProps) -> Html {
-
     html! {
         <section id="templates" class="py-10">
             <h2 class="text-3xl font-bold text-center mb-6">{"Featured Templates"}</h2>
