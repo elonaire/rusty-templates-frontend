@@ -1,0 +1,7 @@
+[[proxy]]
+rewrite = "/api/orders"
+backend = "http://localhost:3010"
+
+[[proxy]]
+rewrite = "/api/acl"
+backend = "http://localhost:3007"
