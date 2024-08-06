@@ -168,8 +168,6 @@ pub fn SignInPage() -> Html {
                         .send()
                         .await;
 
-                    log::info!("response {:?}", response);
-
                 }
             });
             || ()

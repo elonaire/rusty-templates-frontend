@@ -23,7 +23,6 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
         Callback::from(move |e: InputEvent| {
             let input = e.target_unchecked_into::<web_sys::HtmlInputElement>();
             let value_clone = input.value();
-            log::info!("value_clone: {}", value_clone);
             let current_state_clone = current_state_clone.clone();
             selected_license.set(value_clone.clone());
             wasm_bindgen_futures::spawn_local(async move {
@@ -62,7 +61,6 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     let loading_clone = loading.clone();
     let props_clone = props.clone();
     use_effect_with_deps(move |_| {
-        log::info!("{:?}", props_clone.id);
         loading_clone.set(true);
         wasm_bindgen_futures::spawn_local(async move {
             let _product_details = get_product_by_slug(&current_state_clone, &props_clone.id).await;

@@ -46,7 +46,6 @@ pub fn SignUpPage() -> Html {
 
                 match &sign_up_response {
                     GraphQLResponse::Data(data) => {
-                        log::info!("{:?}", data);
                         let modal_info = ModalConfigs {
                             use_case: UseCase::Success,
                             title: "Successfully Registered!".to_string(),

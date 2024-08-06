@@ -34,8 +34,6 @@ pub async fn add_to_cart(
     >(Some(auth_headers), endpoint, query, payload)
     .await;
 
-    log::info!("{:?}", cart);
-
     state_clone.dispatch(StateAction::UpdateCart(
         match cart.get_data() {
             Some(data) => data.create_or_update_cart.clone(),
@@ -259,8 +257,6 @@ pub async fn get_order_cart_products_by_status(
         GetOrderCartProductsVar
     >(Some(auth_headers), endpoint, query, vars)
     .await;
-
-    log::info!("{:?}", order_products);
 
     state_clone.dispatch(StateAction::UpdateOrderCartProducts(
         match order_products.get_data() {

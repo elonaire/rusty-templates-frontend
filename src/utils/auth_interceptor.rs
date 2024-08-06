@@ -15,7 +15,10 @@ pub async fn retrieve_new_token(current_token: &String) -> Result<String, reqwes
     let response = client
         .post(endpoint)
         .header("Content-Type", "application/json")
-        .header("Authorization", format!("Bearer {}", current_token).as_str())
+        .header(
+            "Authorization",
+            format!("Bearer {}", current_token).as_str(),
+        )
         .header(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true")
         .json(&QueryFormatter {
             query: (r#"
@@ -25,15 +28,13 @@ pub async fn retrieve_new_token(current_token: &String) -> Result<String, reqwes
                         sub
                     }
                 }
-            "#
-            ).to_string(),
+            "#)
+            .to_string(),
             variables: None,
         })
         // .body(r#"{"query":"query Query { checkAuth { isAuth sub } }"}, "operationName": "Query" "#)
         .send()
         .await?;
-
-    log::info!("Response: {:?}", response);
 
     // TODO: Implement the logic to check if the user is authenticated
     // Extract the new user token from the response headers

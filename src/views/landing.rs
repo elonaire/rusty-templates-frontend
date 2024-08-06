@@ -117,7 +117,7 @@ pub fn Hero() -> Html {
         <section class="text-center py-20 bg-gray-300 rounded bg-no-repeat bg-cover bg-center" style={background_image}>
             <div class="bg-gray-300 py-6 opacity-90 h-full">
                 <h1 class="text-5xl font-bold mb-4">{"Are you looking to start your next project in Rust?"}</h1>
-                <p class="text-lg mb-8">{"Browse our collection of awesome Rust templates. Web (Frontend and Backend), Mobile & Desktop."}</p>
+                <p class="text-lg mb-8">{"Browse our collection of awesome Rust templates. Web (Frontend and Backend), dApps, Mobile & Desktop."}</p>
                 // <a href="#templates" class="bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition">{"Shop Now"}</a>
                 <Link<Route> classes={"bg-primary text-white px-6 py-2 rounded hover:bg-secondary transition"} to={Route::Store}>{"Shop Now"}</Link<Route>>
             </div>

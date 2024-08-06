@@ -10,10 +10,9 @@ use crate::{
     },
 };
 
-pub async fn get_products(
-    state_clone: &UseReducerHandle<AppState>,
-) -> Result<(), Error> {
-    let endpoint = option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
+pub async fn get_products(state_clone: &UseReducerHandle<AppState>) -> Result<(), Error> {
+    let endpoint =
+        option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
 
     let query = r#"
             query ProductQuery {
@@ -29,31 +28,22 @@ pub async fn get_products(
             }
         "#;
 
-    let products = perform_query_without_vars::<
-        GetProductsResponse
-    >(None, endpoint, query)
-    .await;
+    let products = perform_query_without_vars::<GetProductsResponse>(None, endpoint, query).await;
 
-    state_clone.dispatch(StateAction::UpdateProducts(
-        match products.get_data() {
-            Some(data) => {
-
-                data.get_products.clone()
-            },
-            None => {
-                // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
-                Default::default()
-            },
-        },
-    ));
+    state_clone.dispatch(StateAction::UpdateProducts(match products.get_data() {
+        Some(data) => data.get_products.clone(),
+        None => {
+            // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
+            Default::default()
+        }
+    }));
 
     Ok(())
 }
 
-pub async fn get_products_by_ids(
-    state_clone: &UseReducerHandle<AppState>,
-) -> Result<(), Error> {
-    let endpoint = option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
+pub async fn get_products_by_ids(state_clone: &UseReducerHandle<AppState>) -> Result<(), Error> {
+    let endpoint =
+        option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
 
     let query = r#"
             query ProductQuery($productIds: [String]!) {
@@ -68,33 +58,32 @@ pub async fn get_products_by_ids(
         "#;
 
     let vars = GetProductsByIdsVar {
-        product_ids: state_clone.cart_products_ids.clone()
+        product_ids: state_clone.cart_products_ids.clone(),
     };
 
     let products = perform_mutation_or_query_with_vars::<
         GetProductsByIdsResponse,
-        GetProductsByIdsVar
+        GetProductsByIdsVar,
     >(None, endpoint, query, vars)
     .await;
 
-    state_clone.dispatch(StateAction::UpdateCartProducts(
-        match products.get_data() {
-            Some(data) => data.get_products_by_ids.clone(),
-            None => {
-                // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
-                Default::default()
-            },
-        },
-    ));
+    state_clone.dispatch(StateAction::UpdateCartProducts(match products.get_data() {
+        Some(data) => data.get_products_by_ids.clone(),
+        None => {
+            // state_clone.dispatch(StateAction::UpdateGlobalError(products.get_error()));
+            Default::default()
+        }
+    }));
 
     Ok(())
 }
 
 pub async fn get_product_by_slug(
     state_clone: &UseReducerHandle<AppState>,
-    slug: &String
+    slug: &String,
 ) -> Result<(), Error> {
-    let endpoint = option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
+    let endpoint =
+        option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
 
     let query = r#"
             query ProductQuery($slug: String) {
@@ -112,17 +101,13 @@ pub async fn get_product_by_slug(
             }
         "#;
 
-    let vars = GetProductBySlugVar {
-        slug: slug.clone()
-    };
+    let vars = GetProductBySlugVar { slug: slug.clone() };
 
     let product = perform_mutation_or_query_with_vars::<
         GetProductBySlugResponse,
-        GetProductBySlugVar
+        GetProductBySlugVar,
     >(None, endpoint, query, vars)
     .await;
-
-    log::info!("product: {:?}", product);
 
     state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
         match product.get_data() {
@@ -130,7 +115,7 @@ pub async fn get_product_by_slug(
             None => {
                 // state_clone.dispatch(StateAction::UpdateGlobalError(product.get_error()));
                 Default::default()
-            },
+            }
         },
     ));
 

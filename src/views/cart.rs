@@ -1,6 +1,23 @@
-use yew::prelude::*;
-use crate::{app::{AppStateContext, Route}, components::{button::BasicButton, loading_spinner::LoadingSpinner, no_content::NoContent, nav::top_nav::TopNav}, data::{context::{orders::{add_to_cart, checkout, get_cart, get_product_external_ids, get_raw_cart_products, get_licenses}, products::{get_products, get_products_by_ids}, users::get_new_token}, models::order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload}}};
+use crate::{
+    app::{AppStateContext, Route},
+    components::{
+        button::BasicButton, loading_spinner::LoadingSpinner, nav::top_nav::TopNav,
+        no_content::NoContent,
+    },
+    data::{
+        context::{
+            orders::{
+                add_to_cart, checkout, get_cart, get_licenses, get_product_external_ids,
+                get_raw_cart_products,
+            },
+            products::{get_products, get_products_by_ids},
+            users::get_new_token,
+        },
+        models::order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload},
+    },
+};
 use web_sys::window;
+use yew::prelude::*;
 use yew_router::prelude::*;
 
 #[function_component]
@@ -18,7 +35,7 @@ pub fn CartPage() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 loading_clone.set(true);
                 if current_state_clone.auth_details.token.is_empty() {
-                   let _new_token = get_new_token(&current_state_clone).await;
+                    let _new_token = get_new_token(&current_state_clone).await;
                 }
                 if current_state_clone.products.is_empty() {
                     let _products = get_products(&current_state_clone).await;
@@ -29,9 +46,8 @@ pub fn CartPage() -> Html {
                 }
 
                 if current_state_clone.licenses.is_empty() {
-                   let _licenses = get_licenses(&current_state_clone).await;
+                    let _licenses = get_licenses(&current_state_clone).await;
                 }
-
 
                 loading_clone.set(false);
             }); // Await the async block
@@ -63,14 +79,22 @@ pub fn CartPage() -> Html {
                 }
 
                 if current_state_clone.cart.id.is_some() {
-                    log::info!("Enters here");
-                   let _raw_products = get_raw_cart_products(&current_state_clone, current_state_clone.cart.id.clone().unwrap()).await;
+                    let _raw_products = get_raw_cart_products(
+                        &current_state_clone,
+                        current_state_clone.cart.id.clone().unwrap(),
+                    )
+                    .await;
                 }
                 loading_clone.set(false);
             });
             || ()
         },
-        (current_state.cart_products.clone(), current_state.raw_cart_products.clone(), current_state.cart.clone(), current_state.cart_products_ids.clone()),
+        (
+            current_state.cart_products.clone(),
+            current_state.raw_cart_products.clone(),
+            current_state.cart.clone(),
+            current_state.cart_products_ids.clone(),
+        ),
     );
 
     let current_state_clone_checkout = current_state.clone();
@@ -78,7 +102,6 @@ pub fn CartPage() -> Html {
     let loading_clone = loading.clone();
     let on_checkout = {
         Callback::from(move |_e: MouseEvent| {
-            log::info!("current_state_clone_checkout.auth_details.token: {}", current_state_clone_checkout.auth_details.token);
             if current_state_clone_checkout.auth_details.token.is_empty() {
                 navigator_clone.push(&Route::SignIn);
             }
@@ -97,7 +120,7 @@ pub fn CartPage() -> Html {
     use_effect_with_deps(
         move |_| {
             if !current_state_clone_navigation.checkout_url.is_empty() {
-               navigate_to_url(&current_state_clone_navigation.checkout_url);
+                navigate_to_url(&current_state_clone_navigation.checkout_url);
             }
             || ()
         },
@@ -106,10 +129,7 @@ pub fn CartPage() -> Html {
 
     fn navigate_to_url(url: &str) {
         if let Some(window) = window() {
-            window
-                .location()
-                .set_href(url)
-                .expect("Failed to navigate");
+            window.location().set_href(url).expect("Failed to navigate");
         }
     }
 
@@ -129,13 +149,11 @@ pub fn CartPage() -> Html {
                 let current_state_clone_remove = current_state_clone_remove.clone();
                 let payload = payload.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-
                     let _add_to_cart = add_to_cart(&current_state_clone_remove, payload).await;
                     loading_clone.set(false);
                 });
             })
         })
-
     };
 
     html! {
@@ -208,8 +226,6 @@ pub fn CartPage() -> Html {
                                     <tbody>
                                         {
                                             current_state.cart_products.iter().filter_map(|cart_product| {
-                                                log::info!("cart_product: {:?}", cart_product);
-                                                log::info!("cart_product: {:?}", current_state.raw_cart_products);
                                                 current_state.raw_cart_products.iter().find(|product| {
                                                     cart_product.id.as_ref().map_or(false, |id| id == &product.ext_product_id)
                                                 }).map(|product| {

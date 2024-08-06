@@ -35,9 +35,7 @@ pub fn ProtectedRoute(props: &ProtectedRouteProps) -> Html {
                             url: None
                         }));
 
-                        log::info!("Token: {:?}", token);
                         if token.is_empty() {
-                            log::info!("Goes in here");
                             token_is_loading_clone.set(false);
                             navigator_clone.push(&Route::SignIn);
                         }
