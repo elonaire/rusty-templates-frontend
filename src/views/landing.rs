@@ -112,7 +112,7 @@ pub fn Landing() -> Html {
 pub fn Hero() -> Html {
     let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
         .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
-    let file = use_state_eq(|| "3554da02-b924-4af7-b366-aaebf0212f7a".to_string());
+    let file = use_state_eq(|| "0b987762-8b5b-4bf7-a6de-7f79c0bf0e17".to_string());
     let background_image = format!("background-image: url({}{})", view_file_uri, *file);
 
     html! {
@@ -268,8 +268,8 @@ pub fn WhyPurchaseTemplates() -> Html {
 pub fn MissionVision() -> Html {
     let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
         .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
-    let mission_file = use_state_eq(|| "983c60f4-7841-4cf1-8a9e-f887fe9ca785".to_string());
-    let vision_file = use_state_eq(|| "a43a36fc-8363-4925-87fe-1e22d5011c97".to_string());
+    let mission_file = use_state_eq(|| "ef5fb5cc-5fd4-416b-b4a7-a8ed5ef20ffd".to_string());
+    let vision_file = use_state_eq(|| "e653c8ea-b98a-4928-a343-550621c97abb".to_string());
 
     html! {
         <section class="py-20 bg-gray-200">
