@@ -7,12 +7,11 @@ use crate::{
     data::{
         graphql::api_call::{perform_mutation_or_query_with_vars, GraphQLResponse},
         models::user::{AuthDetails, LoginPayload, LoginResponse, SignUpPayload, SignUpResponse},
-    }, utils::auth_interceptor::retrieve_new_token,
+    },
+    utils::auth_interceptor::retrieve_new_token,
 };
 
-pub async fn sign_up(
-    payload: SignUpPayload
-) -> GraphQLResponse<SignUpResponse> {
+pub async fn sign_up(payload: SignUpPayload) -> GraphQLResponse<SignUpResponse> {
     let endpoint = option_env!("ACL_SERVICE_URL").expect("ACL_SERVICE_URL env var not set");
 
     let query = r#"
@@ -23,10 +22,9 @@ pub async fn sign_up(
             }
         "#;
 
-    let sign_up_res = perform_mutation_or_query_with_vars::<
-        SignUpResponse,
-        SignUpPayload,
-    >(None, endpoint, query, payload)
+    let sign_up_res = perform_mutation_or_query_with_vars::<SignUpResponse, SignUpPayload>(
+        None, endpoint, query, payload,
+    )
     .await;
 
     sign_up_res
@@ -47,9 +45,7 @@ pub async fn sign_up(
     // Ok(())
 }
 
-pub async fn sign_in(
-    payload: LoginPayload
-) -> GraphQLResponse<LoginResponse> {
+pub async fn sign_in(payload: LoginPayload) -> GraphQLResponse<LoginResponse> {
     let endpoint = option_env!("ACL_SERVICE_URL").expect("ACL_SERVICE_URL env var not set");
 
     let query = r#"
@@ -61,10 +57,9 @@ pub async fn sign_in(
             }
         "#;
 
-    let sign_in_res = perform_mutation_or_query_with_vars::<
-        LoginResponse,
-        LoginPayload,
-    >(None, endpoint, query, payload)
+    let sign_in_res = perform_mutation_or_query_with_vars::<LoginResponse, LoginPayload>(
+        None, endpoint, query, payload,
+    )
     .await;
 
     sign_in_res
@@ -86,9 +81,7 @@ pub async fn sign_in(
     // Ok(())
 }
 
-pub async fn get_new_token(
-    state_clone: &UseReducerHandle<AppState>,
-) -> Result<(), Error> {
+pub async fn get_new_token(state_clone: &UseReducerHandle<AppState>) -> Result<(), Error> {
     match retrieve_new_token(&state_clone.auth_details.token).await {
         Ok(new_token) => {
             let details = AuthDetails {
@@ -96,10 +89,9 @@ pub async fn get_new_token(
                 ..state_clone.auth_details.clone()
             };
             state_clone.dispatch(StateAction::UpdateUserAuthInfo(details));
-        },
+        }
         Err(_e) => {}
     };
-
 
     Ok(())
 }

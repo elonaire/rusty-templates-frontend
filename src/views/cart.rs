@@ -230,19 +230,25 @@ pub fn CartPage() -> Html {
                                                     cart_product.id.as_ref().map_or(false, |id| id == &product.ext_product_id)
                                                 }).map(|product| {
                                                     let applicable_license = current_state.licenses.iter().find(|l| l.id == product.license);
-                                                    let payload = UpdateCartPayload {
-                                                        external_product_id: product.ext_product_id.clone(),
-                                                        cart_operation: CartOperation::RemoveProduct,
-                                                        external_license_id: product.license.clone()
-                                                    };
-                                                    html! {
-                                                        <tr>
-                                                            <td class="border border-transparent p-2">{format!("{} ", cart_product.name.clone().unwrap())}<span>{"\u{00D7} 1"}</span></td>
-                                                            <td class="border border-transparent p-2 flex flex-row gap-2 items-center">
-                                                                <span>{format!("${}", cart_product.price.clone().unwrap() * applicable_license.unwrap().price_factor)}</span><BasicButton onclick={on_click_remove_from_cart.emit(payload)} icon={Some(yew_icons::IconId::BootstrapTrash)} button_text={""} style_ext={"text-red-500"} />
-                                                            </td>
-                                                        </tr>
+
+                                                    if applicable_license.is_some() {
+                                                        let payload = UpdateCartPayload {
+                                                            external_product_id: product.ext_product_id.clone(),
+                                                            cart_operation: CartOperation::RemoveProduct,
+                                                            external_license_id: product.license.clone()
+                                                        };
+                                                        html! {
+                                                            <tr>
+                                                                <td class="border border-transparent p-2">{format!("{} ", cart_product.name.clone().unwrap())}<span>{"\u{00D7} 1"}</span></td>
+                                                                <td class="border border-transparent p-2 flex flex-row gap-2 items-center">
+                                                                    <span>{format!("${}", cart_product.price.clone().unwrap() * applicable_license.unwrap().price_factor)}</span><BasicButton onclick={on_click_remove_from_cart.emit(payload)} icon={Some(yew_icons::IconId::BootstrapTrash)} button_text={""} style_ext={"text-red-500"} />
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    } else {
+                                                        html!{}
                                                     }
+
                                                 })
 
                                             }).collect::<Html>()
