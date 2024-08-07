@@ -186,7 +186,7 @@ pub fn PopularTemplateCard(props: &TemplateCardProps) -> Html {
             </div>
             <div class="p-2">
                 <div class="flex flex-row items-center justify-between mb-2">
-                    <h3 onclick={onclick_details.clone()} class="text-lg font-semibold cursor-pointer">{&props.product.name.clone().unwrap()}</h3>
+                    <p onclick={onclick_details.clone()} class="text-lg font-semibold cursor-pointer line-clamp-2">{&props.product.name.clone().unwrap()}</p>
                     <p class="text-lg font-semibold">{format!("${}", props.product.price.unwrap())}</p>
                 </div>
                 <p class="text-gray-700 mb-4 text-sm">{format!("{}", &props.product.use_case.clone().unwrap())}</p>
