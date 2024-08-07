@@ -13,6 +13,7 @@ use crate::{
             products::{get_products, get_products_by_ids},
             users::get_new_token,
         },
+        graphql::api_call::GraphQLResponse,
         models::order::{CartOperation, CartTotals, CheckoutPayload, UpdateCartPayload},
     },
 };
@@ -110,22 +111,20 @@ pub fn CartPage() -> Html {
             let loading_clone = loading_clone.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let payload = CheckoutPayload;
-                let _add_to_cart = checkout(&current_state_clone_checkout, payload).await;
+                let checkout_res = checkout(&current_state_clone_checkout, payload).await;
+
+                match &checkout_res {
+                    GraphQLResponse::Data(data) => {
+                        navigate_to_url(&data.create_order);
+                    }
+                    GraphQLResponse::Error(_e) => {
+                        loading_clone.set(false);
+                    }
+                }
                 loading_clone.set(false);
             });
         })
     };
-
-    let current_state_clone_navigation = current_state.clone();
-    use_effect_with_deps(
-        move |_| {
-            if !current_state_clone_navigation.checkout_url.is_empty() {
-                navigate_to_url(&current_state_clone_navigation.checkout_url);
-            }
-            || ()
-        },
-        current_state.checkout_url.clone(),
-    );
 
     fn navigate_to_url(url: &str) {
         if let Some(window) = window() {
