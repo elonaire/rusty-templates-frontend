@@ -3,7 +3,7 @@ use yew_icons::{Icon, IconId};
 
 use crate::{
     app::AppStateContext,
-    components::{nav::top_nav::TopNav, rating::Rating},
+    components::nav::top_nav::TopNav,
     data::{
         context::{
             orders::get_order_cart_products_by_status, products::get_products, users::get_new_token,

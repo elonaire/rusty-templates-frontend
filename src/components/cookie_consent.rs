@@ -1,6 +1,6 @@
 use chrono::{Duration, Utc};
 use gloo::utils::document;
-use web_sys::{wasm_bindgen::JsCast, window, HtmlDocument};
+use web_sys::{wasm_bindgen::JsCast, HtmlDocument};
 use yew::prelude::*;
 use yew_router::prelude::*;
 

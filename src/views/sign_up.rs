@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 use crate::{
-    app::{AppStateContext, Route, StateAction},
+    app::Route,
     components::{
         button::BasicButton,
         forms::input::{InputField, InputFieldType},
@@ -13,7 +13,7 @@ use crate::{
         graphql::api_call::GraphQLResponse,
         models::{
             general::ModalConfigs,
-            user::{AuthDetails, SignUpForm, SignUpPayload},
+            user::{SignUpForm, SignUpPayload},
         },
     },
 };

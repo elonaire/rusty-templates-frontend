@@ -1,7 +1,5 @@
 use crate::{
-    app::AppStateContext,
-    components::{button::BasicButton, nav::top_nav::TopNav},
-    data::context::users::get_new_token,
+    app::AppStateContext, components::nav::top_nav::TopNav, data::context::users::get_new_token,
 };
 use yew::prelude::*;
 
