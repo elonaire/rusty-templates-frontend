@@ -16,7 +16,6 @@ use crate::{
 use reqwest::Client;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew_icons::IconId;
 use yew_router::prelude::*;
 
 #[function_component]
@@ -176,7 +175,7 @@ pub fn SignInPage() -> Html {
                 if current_state_clone_oauth.auth_details.url.is_some() {
                     let original_url = current_state_clone_oauth.auth_details.url.clone().unwrap();
 
-                    let response = client.get(original_url.as_str()).send().await;
+                    let _response = client.get(original_url.as_str()).send().await;
                 }
             });
             || ()

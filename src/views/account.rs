@@ -1,7 +1,16 @@
 use yew::prelude::*;
 use yew_icons::{Icon, IconId};
 
-use crate::{app::AppStateContext, components::{nav::top_nav::TopNav, rating::Rating}, data::{context::{orders::get_order_cart_products_by_status, products::get_products, users::get_new_token}, models::order::OrderStatus}};
+use crate::{
+    app::AppStateContext,
+    components::nav::top_nav::TopNav,
+    data::{
+        context::{
+            orders::get_order_cart_products_by_status, products::get_products, users::get_new_token,
+        },
+        models::order::OrderStatus,
+    },
+};
 
 #[derive(Clone, PartialEq)]
 enum Tab {
@@ -27,24 +36,31 @@ pub fn AccountPage() -> Html {
 
     let current_state_clone = current_state.clone();
     let loading_clone = loading.clone();
-    use_effect_with_deps(move |_| {
-        loading_clone.set(true);
-        wasm_bindgen_futures::spawn_local(async move {
-            if current_state_clone.products.is_empty() {
-                let _products = get_products(&current_state_clone).await;
-            }
+    use_effect_with_deps(
+        move |_| {
+            loading_clone.set(true);
+            wasm_bindgen_futures::spawn_local(async move {
+                if current_state_clone.products.is_empty() {
+                    let _products = get_products(&current_state_clone).await;
+                }
 
-            if current_state_clone.auth_details.token.is_empty() {
-               let _new_token = get_new_token(&current_state_clone).await;
-            }
+                if current_state_clone.auth_details.token.is_empty() {
+                    let _new_token = get_new_token(&current_state_clone).await;
+                }
 
-            if current_state_clone.order_cart_products.is_empty() {
-               let _new_token = get_order_cart_products_by_status(&current_state_clone, OrderStatus::Confirmed).await;
-            }
+                if current_state_clone.order_cart_products.is_empty() {
+                    let _new_token = get_order_cart_products_by_status(
+                        &current_state_clone,
+                        OrderStatus::Confirmed,
+                    )
+                    .await;
+                }
 
-            loading_clone.set(false);
-        });
-    }, ());
+                loading_clone.set(false);
+            });
+        },
+        (),
+    );
 
     html! {
         <div class="bg-gray-100 min-h-svh font-jost-sans">
@@ -128,8 +144,10 @@ fn Notifications() -> Html {
 fn Orders() -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
 
-    let download_file_uri = option_env!("FILES_SERVICE_DOWNLOAD_URL").expect("FILES_SERVICE_DOWNLOAD_URL env var not set");
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let download_file_uri = option_env!("FILES_SERVICE_DOWNLOAD_URL")
+        .expect("FILES_SERVICE_DOWNLOAD_URL env var not set");
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
 
     // use_effect_with_deps(move |_| {
     //     wasm_bindgen_futures::spawn_local(async move {
@@ -162,8 +180,8 @@ fn Orders() -> Html {
                                     </a>
                                 </div>
                                 <div class="basis-1/3 flex flex-col gap-2">
-                                <h3 class="text-lg font-semibold">{ "Submit a Review" }</h3>
-                                <Rating />
+                                // <h3 class="text-lg font-semibold">{ "Submit a Review" }</h3>
+                                // <Rating />
                                 </div>
                             </div>
                         }

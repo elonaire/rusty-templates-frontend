@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]
 pub enum CartOperation {
     RemoveProduct,
-    AddProduct
+    AddProduct,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
@@ -21,7 +21,7 @@ pub struct UpdateCartPayload {
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct UpdateCartResponse {
     #[serde(rename = "createOrUpdateCart")]
-    pub create_or_update_cart: Cart
+    pub create_or_update_cart: Cart,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, Default)]
@@ -39,7 +39,7 @@ pub struct CartTotals {
     pub subtotal: u64,
     pub vat_rate: f64,
     pub vat: f64,
-    pub total: u64
+    pub total: u64,
 }
 
 impl CartTotals {
@@ -57,37 +57,49 @@ pub struct CheckoutPayload;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct CheckoutResponse {
     #[serde(rename = "createOrder")]
-    pub create_order: String
+    pub create_order: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetProductsIdsResponse {
     #[serde(rename = "getProductExternalIds")]
-    pub get_product_external_ids: Vec<String>
+    pub get_product_external_ids: Vec<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetProductsIdsVar {
     #[serde(rename = "cartId")]
-    pub cart_id: String
+    pub cart_id: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetCartVar {
     #[serde(rename = "cartId")]
-    pub cart_id: String
+    pub cart_id: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetCartResponse {
     #[serde(rename = "getCart")]
-    pub get_cart: Cart
+    pub get_cart: Cart,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetProductSalesPayload {
+    #[serde(rename = "externalProductId")]
+    pub external_product_id: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
+pub struct GetProductSalesResponse {
+    #[serde(rename = "getProductTotalSales")]
+    pub get_product_total_sales: u64,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetLicensesResponse {
     #[serde(rename = "getLicenses")]
-    pub get_licenses: Vec<License>
+    pub get_licenses: Vec<License>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default, Eq)]
@@ -114,24 +126,24 @@ pub struct CartProduct {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetRawCartProductsVar {
     #[serde(rename = "cartId")]
-    pub cart_id: String
+    pub cart_id: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct GetOrderCartProductsVar {
-    pub status: OrderStatus
+    pub status: OrderStatus,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetRawCartProductsResponse {
     #[serde(rename = "getRawCartProducts")]
-    pub get_raw_cart_products: Vec<CartProduct>
+    pub get_raw_cart_products: Vec<CartProduct>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Default)]
 pub struct GetOrderCartProductsResponse {
     #[serde(rename = "getCustomerOrdersByStatus")]
-    pub get_customer_orders_by_status: Vec<CartProduct>
+    pub get_customer_orders_by_status: Vec<CartProduct>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, Eq, PartialEq)]

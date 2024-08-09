@@ -79,22 +79,21 @@ pub fn Landing() -> Html {
                     <TemplatesList templates={current_state.products.to_vec()} />
                     <WhyPurchaseTemplates />
                     <MissionVision />
-                    <ContactSection />
+                    // <ContactSection />
                 </main>
                 <footer class="bg-gray-800 text-white py-10">
                     <div class="container mx-auto text-center mb-6">
                         <h2 class="text-lg font-bold mb-4">{"Stay Connected"}</h2>
                         <div class="flex justify-center space-x-6 mb-6">
-                            <a href="#" class="hover:text-gray-400">{"Facebook"}</a>
-                            <a href="#" class="hover:text-gray-400">{"Twitter"}</a>
-                            <a href="#" class="hover:text-gray-400">{"Instagram"}</a>
-                            <a href="#" class="hover:text-gray-400">{"LinkedIn"}</a>
+                            <a target="_blank" href="https://x.com/RustyTemplates" class="hover:text-gray-400">{"X"}</a>
+                            <a target="_blank" href="https://www.instagram.com/rustytemplates/" class="hover:text-gray-400">{"Instagram"}</a>
+                            <a target="_blank" href="https://www.linkedin.com/company/rusty-templates/?viewAsMember=true" class="hover:text-gray-400">{"LinkedIn"}</a>
                         </div>
                         <div class="flex justify-center space-x-6 mb-6">
-                            <a href="#" class="hover:text-gray-400">{"Privacy Policy"}</a>
-                            <a href="#" class="hover:text-gray-400">{"Terms of Service"}</a>
-                            <a href="#" class="hover:text-gray-400">{"FAQs"}</a>
-                            <a href="#" class="hover:text-gray-400">{"Contact Us"}</a>
+                            <Link<Route> classes={"transition hover:text-gray-400"} to={Route::PrivacyPolicy}>{"Privacy Policy"}</Link<Route>>
+                            <Link<Route> classes={"transition hover:text-gray-400"} to={Route::TermsOfService}>{"Terms of Service"}</Link<Route>>
+                            <Link<Route> classes={"transition hover:text-gray-400"} to={Route::FAQs}>{"FAQs"}</Link<Route>>
+                            <Link<Route> classes={"transition hover:text-gray-400"} to={Route::About}>{"About Us"}</Link<Route>>
                         </div>
                     </div>
                     <div class="container mx-auto text-center">
