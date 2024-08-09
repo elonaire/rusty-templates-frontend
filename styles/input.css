@@ -53,3 +53,7 @@ pre {
         @apply underline text-secondary;
     }
 }
+
+img[alt="folders"] {
+    @apply w-1/2;
+}
