@@ -37,6 +37,10 @@ jobs:
           echo "FILES_SERVICE_VIEW_URL=${{ vars.FILES_SERVICE_VIEW_URL }}" >> .env
           echo "FILES_SERVICE_UPLOAD_URL=${{ vars.FILES_SERVICE_UPLOAD_URL }}" >> .env
           echo "FILES_SERVICE_VIEW_PROD_URL=${{ vars.FILES_SERVICE_VIEW_PROD_URL }}" >> .env
+          echo "FILES_SERVICE=${{ vars.FILES_SERVICE }}" >> .env
+          echo "PIVACY_POLICY_FILE=${{ vars.PIVACY_POLICY_FILE }}" >> .env
+          echo "TOS_FILE=${{ vars.TOS_FILE }}" >> .env
+          echo "FAQS_FILE=${{ vars.FAQS_FILE }}" >> .env
           cat .env
           export $(cat .env | xargs) && trunk build --release
         # run: trunk build --release
