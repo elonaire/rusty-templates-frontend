@@ -1,19 +1,23 @@
 use web_sys::window;
 use yew::prelude::*;
+use yew_icons::{Icon, IconId};
 use yew_router::prelude::*;
 
 use crate::{
-    app::{AppStateContext, Route},
+    app::{AppStateContext, Route, StateAction},
     components::{
         button::BasicButton, forms::radio_input::RadioInputField, loading_spinner::LoadingSpinner,
         nav::top_nav::TopNav,
     },
     data::{
         context::{
-            orders::{add_to_cart, get_cart, get_licenses, get_raw_cart_products},
+            orders::{
+                add_to_cart, get_cart, get_licenses, get_product_total_sales, get_raw_cart_products,
+            },
             products::get_product_by_slug,
             users::get_new_token,
         },
+        graphql::api_call::GraphQLResponse,
         models::order::{CartOperation, UpdateCartPayload},
     },
 };
@@ -28,6 +32,7 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     let selected_license = use_state(|| "".to_string());
     let current_state = use_context::<AppStateContext>().unwrap();
     let loading = use_state_eq(|| false);
+    let total_sales = use_state_eq(|| 0);
     let navigator = use_navigator().unwrap();
     let view_file_uri =
         option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
@@ -57,36 +62,38 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
     };
 
     let onclick_buy = {
-        // let current_state_clone = current_state.clone();
-        // let selected_license_clone = selected_license.clone();
         let navigator_clone = navigator.clone();
         Callback::from(move |_e: MouseEvent| {
-            // current_state_clone.dispatch(StateAction::UpdateCart(product_clone.clone()));
-            // let current_state_clone = current_state_clone.clone();
-            let navigator_clone = navigator_clone.clone();
-            // let selected_license_val = (*selected_license_clone).clone();
             navigator_clone.push(&Route::Cart);
-            // wasm_bindgen_futures::spawn_local(async move {
-            //     let payload = UpdateCartPayload {
-            //         external_product_id: current_state_clone.current_product_details.id.clone().unwrap(),
-            //         cart_operation: CartOperation::AddProduct,
-            //         external_license_id: selected_license_val
-            //     };
-            //     let _add_to_cart = add_to_cart(&current_state_clone, payload).await;
-
-            // });
         })
     };
 
     let current_state_clone = current_state.clone();
     let loading_clone = loading.clone();
     let props_clone = props.clone();
+    let total_sales_clone = total_sales.clone();
     use_effect_with_deps(
         move |_| {
             loading_clone.set(true);
             wasm_bindgen_futures::spawn_local(async move {
-                let _product_details =
-                    get_product_by_slug(&current_state_clone, &props_clone.id).await;
+                let product_details = get_product_by_slug(&props_clone.id).await;
+
+                match &product_details {
+                    GraphQLResponse::Data(data) => {
+                        let total_sales =
+                            get_product_total_sales(data.get_product_by_slug.id.clone().unwrap())
+                                .await;
+
+                        total_sales_clone
+                            .set(total_sales.get_data().unwrap().get_product_total_sales);
+                        current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+                            data.get_product_by_slug.clone(),
+                        ));
+                    }
+                    GraphQLResponse::Error(_e) => {
+                        // error_clone.set(product_details.get_error().clone());
+                    }
+                }
 
                 if current_state_clone.auth_details.token.is_empty() {
                     let _new_token = get_new_token(&current_state_clone).await;
@@ -179,19 +186,22 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                     <h1 class="text-2xl font-bold my-2">{current_state.current_product_details.name.clone()}</h1>
                     <div class="grid sm:grid-cols-1 md:grid-cols-8 gap-4">
                         // Screenshot Section
-                        <div class="md:col-span-5">
+                        <div class="md:col-span-5 overflow-y-auto">
                             <div>
                                 <img src={format!("{}{}", view_file_uri, current_state.current_product_details.screenshot.clone().unwrap_or("".into()))} alt="Template Screenshot" class="w-full h-auto object-cover rounded" />
-                                <p><strong>{"Application Layer: "}</strong>{current_state.current_product_details.application_layer.clone()}</p>
-                                <p><strong>{"Framework: "}</strong>{current_state.current_product_details.framework.clone()}</p>
-                                <p><strong>{"UI Framework: "}</strong>{current_state.current_product_details.ui_framework.clone()}</p>
+                                // <p><strong>{"Application Layer: "}</strong>{current_state.current_product_details.application_layer.clone()}</p>
+                                // <p><strong>{"Framework: "}</strong>{current_state.current_product_details.framework.clone()}</p>
+                                // <p><strong>{"UI Framework: "}</strong>{current_state.current_product_details.ui_framework.clone()}</p>
+                                <div class="mt-2 p-2 md-body">
+                                    { Html::from_html_unchecked(current_state.current_product_details.product_details.clone().unwrap_or("".into()).into()) }
+                                </div>
                             </div>
                         </div>
 
                         // License and Actions Section
                         <div class="md:col-span-3 flex flex-col gap-4">
                             <div class="border p-4 rounded shadow-md">
-                                <h3 class="text-lg font-semibold mb-2">{ "Choose License:" }</h3>
+                                <h3 class="text-lg font-semibold mb-2">{ "Choose License: " }<span class="font-normal text-sm underline text-primary"><Link<Route> classes={"transition hover:text-gray-400"} to={Route::TermsOfService}>{"Read More"}</Link<Route>></span></h3>
 
                                 <div class="flex flex-col justify-center space-y-2">
                                     {
@@ -209,10 +219,6 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                             <BasicButton
                                 button_text={"Buy Now".to_string()}
                                 style_ext={"bg-primary text-white px-4 py-2 text-sm transition duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                                icon={None}
-                                // disabled={!*login_form_is_valid}
-                                // button_type={"submit".to_string()}
-                                icon_before={true} // if you have an icon before the button text, set it to true
                                 onclick={onclick_buy}
                                 disabled={selected_license.is_empty()}
                             />
@@ -220,12 +226,18 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                             <BasicButton
                                 button_text={"Live Preview".to_string()}
                                 style_ext={"bg-secondary text-white px-4 py-2 text-sm hover:bg-secondary transition duration-300 ease-in-out hover:shadow-md hover:-translate-y-1 hover:z-10 text-white w-full".to_string()}
-                                icon={None}
                                 onclick={on_click_preview.emit(current_state.current_product_details.preview_link.clone().unwrap_or("".to_string()))}
-                                // disabled={!*login_form_is_valid}
-                                // button_type={"submit".to_string()}
-                                icon_before={true} // if you have an icon before the button text, set it to true
                             />
+
+                            <div class="flex flex-row">
+                                <div class="flex flex-row items-center gap-4 text-lg text-gray-400 font-semibold">
+                                    <span>
+                                        <Icon width={"1em".to_owned()} height={"1em".to_owned()} icon_id={IconId::BootstrapCart3}/>
+                                    </span>
+                                    <p>{format!("{} Sales", (*total_sales))}</p>
+                                </div>
+                                <div></div>
+                            </div>
                         </div>
                     </div>
                 </div>

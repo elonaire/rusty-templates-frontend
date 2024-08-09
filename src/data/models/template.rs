@@ -17,6 +17,8 @@ pub struct Product {
     pub price: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "previewLink")]
     pub preview_link: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "productDetails")]
+    pub product_details: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub screenshot: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,7 +136,7 @@ pub struct GetProductsByIdsResponse {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GetProductsByIdsVar {
     #[serde(rename = "productIds")]
-    pub product_ids: Vec<String>
+    pub product_ids: Vec<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -145,5 +147,5 @@ pub struct GetProductBySlugResponse {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GetProductBySlugVar {
-    pub slug: String
+    pub slug: String,
 }

@@ -1,11 +1,14 @@
-use yew::prelude::*;
-use yew::function_component;
-use yew_icons::{Icon, IconId};
-use yew_router::prelude::*;
 use crate::data::context::orders::get_cart;
 use crate::data::context::orders::get_product_external_ids;
 use crate::data::context::products::get_products_by_ids;
-use crate::{app::{Route, AppStateContext}, components::badge::Badge};
+use crate::{
+    app::{AppStateContext, Route},
+    components::badge::Badge,
+};
+use yew::function_component;
+use yew::prelude::*;
+use yew_icons::{Icon, IconId};
+use yew_router::prelude::*;
 
 #[function_component]
 pub fn TopNav() -> Html {
@@ -24,16 +27,18 @@ pub fn TopNav() -> Html {
     };
 
     let current_state_clone_update = current_state.clone();
-    use_effect_with_deps(move |_| {
-        wasm_bindgen_futures::spawn_local(async move {
-            let _cart = get_cart(&current_state_clone_update).await;
+    use_effect_with_deps(
+        move |_| {
+            wasm_bindgen_futures::spawn_local(async move {
+                let _cart = get_cart(&current_state_clone_update).await;
 
-            let _cart_product_ids = get_product_external_ids(&current_state_clone_update).await;
+                let _cart_product_ids = get_product_external_ids(&current_state_clone_update).await;
 
-            let _cart_products = get_products_by_ids(&current_state_clone_update).await;
-        });
-    }, current_state.clone());
-
+                let _cart_products = get_products_by_ids(&current_state_clone_update).await;
+            });
+        },
+        current_state.clone(),
+    );
 
     html! {
         <>
@@ -44,8 +49,10 @@ pub fn TopNav() -> Html {
                         <img class="w-24" src="https://imagedelivery.net/fa3SWf5GIAHiTnHQyqU8IQ/01f762dc-20a6-4842-30fb-2b2401c66200/public" alt="logo" />
                     </Link<Route>>
                     <div class="hidden md:flex items-center">
-                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Landing}>{"Home"}</Link<Route>>
                         <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::Store}>{"Templates"}</Link<Route>>
+                        <Link<Route> classes={classes!("text-gray-700", "px-4")} to={Route::About}>{"About Us"}</Link<Route>>
+                    </div>
+                    <div class="hidden md:flex items-center">
                         {
                             if current_state.auth_details.token.is_empty() {
                                 html! {

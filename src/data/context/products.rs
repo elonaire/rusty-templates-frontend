@@ -5,8 +5,13 @@ use yew::UseReducerHandle;
 use crate::{
     app::{AppState, StateAction},
     data::{
-        graphql::api_call::{perform_mutation_or_query_with_vars, perform_query_without_vars},
-        models::template::*,
+        graphql::api_call::{
+            perform_mutation_or_query_with_vars, perform_query_without_vars, GraphQLResponse,
+        },
+        models::{
+            general::{ServeMdPayload, ServeMdResponse},
+            template::*,
+        },
     },
 };
 
@@ -24,6 +29,7 @@ pub async fn get_products(state_clone: &UseReducerHandle<AppState>) -> Result<()
                     useCase
                     slug
                     previewLink
+                    productDetails
                 }
             }
         "#;
@@ -78,10 +84,7 @@ pub async fn get_products_by_ids(state_clone: &UseReducerHandle<AppState>) -> Re
     Ok(())
 }
 
-pub async fn get_product_by_slug(
-    state_clone: &UseReducerHandle<AppState>,
-    slug: &String,
-) -> Result<(), Error> {
+pub async fn get_product_by_slug(slug: &String) -> GraphQLResponse<GetProductBySlugResponse> {
     let endpoint =
         option_env!("PRODUCTS_SERVICE_URL").expect("PRODUCTS_SERVICE_URL env var not set");
 
@@ -97,6 +100,7 @@ pub async fn get_product_by_slug(
                     framework
                     applicationLayer
                     uiFramework
+                    productDetails
                 }
             }
         "#;
@@ -109,15 +113,36 @@ pub async fn get_product_by_slug(
     >(None, endpoint, query, vars)
     .await;
 
-    state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
-        match product.get_data() {
-            Some(data) => data.get_product_by_slug.clone(),
-            None => {
-                // state_clone.dispatch(StateAction::UpdateGlobalError(product.get_error()));
-                Default::default()
-            }
-        },
-    ));
+    product
 
-    Ok(())
+    // state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+    //     match product.get_data() {
+    //         Some(data) => data.get_product_by_slug.clone(),
+    //         None => {
+    //             // state_clone.dispatch(StateAction::UpdateGlobalError(product.get_error()));
+    //             Default::default()
+    //         }
+    //     },
+    // ));
+
+    // Ok(())
+}
+
+pub async fn serve_md_file(file_name: String) -> GraphQLResponse<ServeMdResponse> {
+    let endpoint = option_env!("FILES_SERVICE").expect("FILES_SERVICE env var not set");
+
+    let query = r#"
+            query FilesQuery($fileName: String!) {
+                serveMdFiles(fileName: $fileName)
+            }
+        "#;
+
+    let payload = ServeMdPayload { file_name };
+
+    let serve_md_res = perform_mutation_or_query_with_vars::<ServeMdResponse, ServeMdPayload>(
+        None, endpoint, query, payload,
+    )
+    .await;
+
+    serve_md_res
 }

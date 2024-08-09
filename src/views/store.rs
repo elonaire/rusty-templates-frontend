@@ -1,7 +1,17 @@
+use crate::{
+    app::{AppStateContext, StateAction, TemplateRoute},
+    components::{
+        button::BasicButton,
+        forms::select::{SelectInput, SelectOption},
+        loading_spinner::LoadingSpinner,
+        nav::top_nav::TopNav,
+    },
+    data::context::{orders::get_cart, products::get_products, users::get_new_token},
+    views::landing::{TemplateCardProps, TemplatesListProps},
+};
 use web_sys::window;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::{app::{AppStateContext, StateAction, TemplateRoute}, components::{button::BasicButton, forms::select::{SelectInput, SelectOption}, loading_spinner::LoadingSpinner, nav::top_nav::TopNav}, data::context::{orders::get_cart, products::get_products, users::get_new_token}, views::landing::{TemplateCardProps, TemplatesListProps}};
 
 #[function_component]
 pub fn StorePage() -> Html {
@@ -19,7 +29,7 @@ pub fn StorePage() -> Html {
                 }
 
                 if current_state_clone.auth_details.token.is_empty() {
-                   let _new_token = get_new_token(&current_state_clone).await;
+                    let _new_token = get_new_token(&current_state_clone).await;
                 }
 
                 if current_state_clone.cart.id.is_none() {
@@ -50,7 +60,6 @@ pub fn StorePage() -> Html {
 
     // }, current_state.clone());
 
-
     html! {
         <>
             <div class="bg-gray-100 min-h-svh font-jost-sans">
@@ -63,12 +72,13 @@ pub fn StorePage() -> Html {
                             } else { html!{} }
                         }
                         // Left sidebar for filters
-                        <div class="w-1/4 hidden md:block ">
-                            <FilterMenu />
-                        </div>
+                        // <div class="w-1/4 hidden md:block ">
+                        //     <FilterMenu />
+                        // </div>
                         // Right main content for product listing
-                        <div class="w-4/4 md:w-3/4 p-4">
-                        <TemplatesList templates={current_state.products.to_vec()} />
+                        // <div class="w-4/4 md:w-3/4 p-4">
+                        <div class="w-4/4 p-4">
+                            <TemplatesList templates={current_state.products.to_vec()} />
                         </div>
                     </div>
                 </main>
@@ -105,15 +115,20 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
     let current_state = use_context::<AppStateContext>().unwrap();
     let navigator = use_navigator().unwrap();
 
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
 
     let navigator_clone = navigator.clone();
     let onclick_details = {
         let current_state_clone = current_state.clone();
         let product_clone = props.product.clone();
         Callback::from(move |_| {
-            current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(product_clone.clone()));
-            navigator_clone.push(&TemplateRoute::TemplateDetails { id: product_clone.slug.clone().unwrap() });
+            current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+                product_clone.clone(),
+            ));
+            navigator_clone.push(&TemplateRoute::TemplateDetails {
+                id: product_clone.slug.clone().unwrap(),
+            });
         })
     };
 
@@ -155,7 +170,6 @@ pub fn TemplateCard(props: &TemplateCardProps) -> Html {
 
 #[function_component]
 pub fn TemplatesList(TemplatesListProps { templates }: &TemplatesListProps) -> Html {
-
     html! {
         <section id="templates" class="">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -10,9 +10,10 @@ use crate::{
         },
         models::order::{
             CheckoutPayload, CheckoutResponse, GetCartResponse, GetLicensesResponse,
-            GetOrderCartProductsResponse, GetOrderCartProductsVar, GetProductsIdsResponse,
-            GetProductsIdsVar, GetRawCartProductsResponse, GetRawCartProductsVar, OrderStatus,
-            UpdateCartPayload, UpdateCartResponse,
+            GetOrderCartProductsResponse, GetOrderCartProductsVar, GetProductSalesPayload,
+            GetProductSalesResponse, GetProductsIdsResponse, GetProductsIdsVar,
+            GetRawCartProductsResponse, GetRawCartProductsVar, OrderStatus, UpdateCartPayload,
+            UpdateCartResponse,
         },
     },
 };
@@ -84,18 +85,6 @@ pub async fn checkout(
     .await;
 
     payment_url
-
-    // state_clone.dispatch(StateAction::UpdateCheckoutUrl(
-    //     match payment_url.get_data() {
-    //         Some(data) => data.create_order.clone(),
-    //         None => {
-    //             // state_clone.dispatch(StateAction::UpdateGlobalError(payment_url.get_error()));
-    //             Default::default()
-    //         },
-    //     },
-    // ));
-
-    // Ok(())
 }
 
 pub async fn get_product_external_ids(
@@ -278,4 +267,28 @@ pub async fn get_order_cart_products_by_status(
     ));
 
     Ok(())
+}
+
+pub async fn get_product_total_sales(
+    external_product_id: String,
+) -> GraphQLResponse<GetProductSalesResponse> {
+    let endpoint = option_env!("ORDERS_SERVICE_URL").expect("ORDERS_SERVICE_URL env var not set");
+
+    let query = r#"
+            query GetProductTotalSales($externalProductId: String!) {
+                getProductTotalSales(externalProductId: $externalProductId)
+            }
+        "#;
+
+    let payload = GetProductSalesPayload {
+        external_product_id,
+    };
+
+    let total_sales = perform_mutation_or_query_with_vars::<
+        GetProductSalesResponse,
+        GetProductSalesPayload,
+    >(None, endpoint, query, payload)
+    .await;
+
+    total_sales
 }

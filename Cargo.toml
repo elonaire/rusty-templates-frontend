@@ -21,8 +21,11 @@ serde = "1.0.204"
 tailwind-yew = "0.1.5"
 wasm-bindgen-futures = "0.4.42"
 wasm-logger = "0.2.0"
-web-sys = { version = "0.3.69", features = ["HtmlSelectElement", "HtmlDocument"]}
-yew = { version="0.20", features=["csr"] }
+web-sys = { version = "0.3.69", features = [
+    "HtmlSelectElement",
+    "HtmlDocument",
+] }
+yew = { version = "0.20", features = ["csr"] }
 yew-router = "0.17"
 yew_icons = { version = "0.7.3", features = [
     "BootstrapCart3",
@@ -96,5 +99,5 @@ yew_icons = { version = "0.7.3", features = [
     "FontAwesomeRegularCompass",
     "FontAwesomeSolidCircleUser",
     "LucideDownload",
-    "FeatherCheckCircle"
+    "FeatherCheckCircle",
 ] }
