@@ -84,8 +84,20 @@ pub fn TemplateDetails(props: &TemplateDetailsProps) -> Html {
                             get_product_total_sales(data.get_product_by_slug.id.clone().unwrap())
                                 .await;
 
-                        total_sales_clone
-                            .set(total_sales.get_data().unwrap().get_product_total_sales);
+                        // total_sales_clone
+                        //     .set(total_sales.get_data().unwrap().get_product_total_sales);
+                        // current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
+                        //     data.get_product_by_slug.clone(),
+                        // ));
+                        match total_sales.get_data() {
+                            Some(sales) => {
+                                total_sales_clone.set(sales.get_product_total_sales);
+                            }
+                            None => {
+                                total_sales_clone.set(0);
+                            }
+                        }
+
                         current_state_clone.dispatch(StateAction::UpdateCurrentProductDetails(
                             data.get_product_by_slug.clone(),
                         ));

@@ -7,9 +7,9 @@ use yew::prelude::*;
 pub fn About() -> Html {
     let loading = use_state_eq(|| false);
     let current_state = use_context::<AppStateContext>().unwrap();
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
-        .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
-    let dp_file = use_state_eq(|| "0f543cb7-3305-40bc-a442-410c66de2c7d".to_string());
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let dp_file = use_state_eq(|| "800d71f1-6c97-4978-973f-92b7885393f0".to_string());
 
     let current_state_clone = current_state.clone();
     let loading_clone = loading.clone();

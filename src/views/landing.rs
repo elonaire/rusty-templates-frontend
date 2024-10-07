@@ -109,9 +109,9 @@ pub fn Landing() -> Html {
 
 #[function_component]
 pub fn Hero() -> Html {
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
-        .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
-    let file = use_state_eq(|| "e07c7891-f947-42d1-aa06-8e4e0d86d50f".to_string());
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let file = use_state_eq(|| "a9802fe4-1891-42a8-8754-fc456124de51".to_string());
     let background_image = format!("background-image: url({}{})", view_file_uri, *file);
 
     html! {
@@ -265,10 +265,10 @@ pub fn WhyPurchaseTemplates() -> Html {
 
 #[function_component]
 pub fn MissionVision() -> Html {
-    let view_file_uri = option_env!("FILES_SERVICE_VIEW_PROD_URL")
-        .expect("FILES_SERVICE_VIEW_PROD_URL env var not set");
-    let mission_file = use_state_eq(|| "748d3d30-0aee-4336-9714-2a094ab65171".to_string());
-    let vision_file = use_state_eq(|| "700573b3-c093-4414-ae2e-9a60d2b59bad".to_string());
+    let view_file_uri =
+        option_env!("FILES_SERVICE_VIEW_URL").expect("FILES_SERVICE_VIEW_URL env var not set");
+    let mission_file = use_state_eq(|| "da109389-ad25-4689-8ab0-f3379452fa65".to_string());
+    let vision_file = use_state_eq(|| "f27eed3f-ab67-4ec5-9202-e35acd13335e".to_string());
 
     html! {
         <section class="py-20 bg-gray-200">
